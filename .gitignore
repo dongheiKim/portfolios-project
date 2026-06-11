@@ -86,3 +86,9 @@ Thumbs.db
 pnpm-lock.yaml
 yarn.lock
 package-lock.json
+
+# Project memo files - 프로젝트 메모용
+.Memo/
+.Todo/
+.Fix/
+.Bug/
