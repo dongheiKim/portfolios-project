@@ -18,7 +18,7 @@
 - **라우팅/데이터**: React Router v7 + TanStack Query로 페이지 전환과 서버 상태 관리를 최적화.
 - **상태/실시간**: Zustand로 전역 상태를 단순화하고, Socket.io + simple-peer로 실시간/P2P 기능 구현.
 - **UI/인터랙션**: Tailwind CSS와 Framer Motion(react-intersection-observer 포함)으로 반응형 UI와 인터랙션 구성.
-- **개발 생산성**: Vite + TypeScript, ESLint + Prettier, 환경 변수 관리로 안정적 개발 환경 유지.
+- **개발 생산성**: Vite + TypeScript, 환경 변수 관리로 안정적 개발 환경 유지.
 
 ## FSD 주요 폴더 구조
 
