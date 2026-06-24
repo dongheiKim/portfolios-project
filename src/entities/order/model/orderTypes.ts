@@ -5,6 +5,7 @@ export type Order = {
   status: OrderStatus;
   createdAt: Date;
   updatedAt: Date;
+  shippingAddress: string;
 };
 
 export enum OrderStatus {
@@ -24,26 +25,4 @@ export type OrderDetails = {
   order: Order;
   productName: string;
   productPrice: number;
-};
-
-export type CreateOrderRequest = {
-  productId: string;
-  quantity: number;
-};
-
-export type UpdateOrderStatusRequest = {
-  orderId: string;
-  status: OrderStatus;
-};
-
-export type OrderFilter = {
-  status?: OrderStatus;
-  startDate?: Date;
-  endDate?: Date;
-};
-
-export type OrderListResponse = {
-  orders: Order[];
-  total: number;
-  summary: OrderSummary;
 };
