@@ -36,7 +36,7 @@ export interface ProductSummary {
   reviewCount: number;
   isRocketDelivery: boolean;
   seller: string;
-  Productdetail: string;
+  productDetail: ProductDetail;
   description: string;
 }
 

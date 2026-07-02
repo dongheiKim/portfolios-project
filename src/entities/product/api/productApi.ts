@@ -1,5 +1,5 @@
 import type { ProductSummary, ProductDetail } from "../model/productTypes";
-import { Review, Question } from "../model/productTypes";
+// import { Review, Question } from "../model/productTypes";
 
 export async function fetchProductById(id: number): Promise<ProductDetail> {
   const Products: ProductSummary[] = [];
@@ -17,10 +17,10 @@ export async function fetchProductById(id: number): Promise<ProductDetail> {
       description: Product.description,
       createdAt: new Date().toISOString(),
       details: {
-        "제품 설명": Product.Productdetail,
+        "제품 설명": Product.description,
       },
-      reviews: id,
-      questions: id,
+      reviews: [] as any,
+      questions: [] as any,
     };
   }
   throw new Error(`Product with id ${id} not found`);
