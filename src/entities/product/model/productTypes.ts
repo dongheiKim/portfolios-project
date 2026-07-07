@@ -40,6 +40,22 @@ export interface ProductSummary {
   description: string;
 }
 
+export interface ProductCard {
+  id: number;
+  name: string;
+  price: number;
+  originalPrice?: number;
+  discountRate: number;
+  imageUrl: string;
+  category: ProductCategory;
+  rating: number;
+  reviewCount: number;
+  isRocketDelivery: boolean;
+  seller: string;
+  productDetail: ProductDetail;
+  description: string;
+}
+
 export interface Review {
   id: number;
   productId: number;

@@ -6,7 +6,7 @@ export function HomePage() {
   return (
     <div>
       <Header />
-      <ProductList />
+      <ProductList products={[]} />
       <Footer />
     </div>
   );
