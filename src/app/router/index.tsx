@@ -21,7 +21,7 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
-export function AppRouters() {
+export function AppRouter() {
   const location = useLocation();
 
   return (

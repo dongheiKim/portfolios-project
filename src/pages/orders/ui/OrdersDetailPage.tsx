@@ -30,7 +30,8 @@ const statusColor: Record<OrderStatus, string> = {
 
 export function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const orderId = String(id);
+  const orderId = (id ?? "").trim();
+  const invalidOrderId = !/^[1-9]\d*$/.test(orderId);
 
   const {
     data: order,
@@ -38,8 +39,8 @@ export function OrderDetailPage() {
     isError,
   } = useQuery({
     queryKey: ["order", orderId],
-    queryFn: () => fetchOrderById(String(orderId)),
-    enabled: !Number.isNaN(Number(orderId)),
+    queryFn: () => fetchOrderById(orderId),
+    enabled: !invalidOrderId,
   });
 
   return (
@@ -56,13 +57,21 @@ export function OrderDetailPage() {
           주문 목록
         </Link>
 
-        {isError && (
+        {invalidOrderId && (
+          <div className="rounded-[28px] border border-[#e4ebf3] bg-white py-20 text-center text-[#64748b] shadow-[0_18px_45px_rgba(15,23,42,0.05)]">
+            <p className="text-lg font-medium">
+              유효한 숫자 주문 번호가 아닙니다.
+            </p>
+          </div>
+        )}
+
+        {!invalidOrderId && isError && (
           <div className="rounded-[28px] border border-[#e4ebf3] bg-white py-20 text-center text-[#64748b] shadow-[0_18px_45px_rgba(15,23,42,0.05)]">
             <p className="text-lg font-medium">주문을 찾을 수 없습니다.</p>
           </div>
         )}
 
-        {isLoading && (
+        {!invalidOrderId && isLoading && (
           <div className="flex flex-col gap-5">
             <HeroSkeleton />
             <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(300px,0.8fr)]">
@@ -161,8 +170,12 @@ export function OrderDetailPage() {
                       {order.shippingAddress.city}{" "}
                       {order.shippingAddress.street}
                     </p>
-                    {order.shippingAddress.zipcode && (
-                      <p>{order.shippingAddress.addressDetail}</p>
+                    {(order.shippingAddress.zipcode ||
+                      order.shippingAddress.addressDetail) && (
+                      <p>
+                        {order.shippingAddress.zipcode}{" "}
+                        {order.shippingAddress.addressDetail}
+                      </p>
                     )}
                   </div>
                 </div>
