@@ -48,3 +48,14 @@ export function createOrder(payload: CreateOrderPayload): Promise<Order> {
     })
     .then((data) => data as Order);
 }
+
+export function fetchOrders(): Promise<Order[]> {
+  return fetch("/api/orders")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to fetch orders");
+      }
+      return response.json();
+    })
+    .then((data) => data as Order[]);
+}

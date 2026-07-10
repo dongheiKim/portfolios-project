@@ -1,19 +1,15 @@
 import { Navigate, Route, Routes, useLocation } from "react-router";
 import { AnimatePresence } from "framer-motion";
 import { HomePage } from "@/pages/home";
-import { OrdersPage } from "@/pages/orders";
 import { ProductDetailPage } from "@/pages/product-detail";
-import { SignupPage } from "@/pages/signup";
-import { LoginPage } from "@/pages/login";
-import { NotFoundPage } from "@/pages/not-found";
 import { CartPage } from "@/pages/cart";
-import { OrderDetailPage } from "@/pages/orders";
+import { LoginPage } from "@/pages/login";
+import { SignupPage } from "@/pages/signup";
+import { NotFoundPage } from "@/pages/not-found";
+import { OrdersPage, OrderDetailPage } from "@/pages/orders";
 import { useAuthStore } from "@/features/auth/model/authStore";
 import { PageTransition } from "@/app/ui/PageTransition";
-import { Header } from "@/widgets/header";
-import { Footer } from "@/widgets/footer";
 import type { ReactNode } from "react";
-import "@/app/styles/global.css";
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const token = useAuthStore((s) => s.token);
@@ -31,9 +27,7 @@ export function AppRouter() {
           path="/"
           element={
             <PageTransition>
-              <Header />
               <HomePage />
-              <Footer />
             </PageTransition>
           }
         />
@@ -41,9 +35,7 @@ export function AppRouter() {
           path="/products/:id"
           element={
             <PageTransition>
-              <Header />
               <ProductDetailPage />
-              <Footer />
             </PageTransition>
           }
         />
@@ -52,9 +44,7 @@ export function AppRouter() {
           element={
             <ProtectedRoute>
               <PageTransition>
-                <Header />
                 <CartPage />
-                <Footer />
               </PageTransition>
             </ProtectedRoute>
           }
@@ -64,9 +54,7 @@ export function AppRouter() {
           element={
             <ProtectedRoute>
               <PageTransition>
-                <Header />
                 <OrdersPage />
-                <Footer />
               </PageTransition>
             </ProtectedRoute>
           }
@@ -76,19 +64,9 @@ export function AppRouter() {
           element={
             <ProtectedRoute>
               <PageTransition>
-                <Header />
                 <OrderDetailPage />
-                <Footer />
               </PageTransition>
             </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/signup"
-          element={
-            <PageTransition>
-              <SignupPage />
-            </PageTransition>
           }
         />
         <Route
@@ -96,6 +74,14 @@ export function AppRouter() {
           element={
             <PageTransition>
               <LoginPage />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <PageTransition>
+              <SignupPage />
             </PageTransition>
           }
         />
