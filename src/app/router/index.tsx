@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes, useLocation } from "react-router";
 import { AnimatePresence } from "framer-motion";
+import { MainLayout } from "@/app/layouts/MainLayout";
 import { HomePage } from "@/pages/home";
 import { ProductDetailPage } from "@/pages/product-detail";
 import { CartPage } from "@/pages/cart";
@@ -23,52 +24,54 @@ export function AppRouter() {
   return (
     <AnimatePresence mode="wait" initial={false}>
       <Routes location={location} key={location.pathname}>
-        <Route
-          path="/"
-          element={
-            <PageTransition>
-              <HomePage />
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/products/:id"
-          element={
-            <PageTransition>
-              <ProductDetailPage />
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/cart"
-          element={
-            <ProtectedRoute>
+        <Route element={<MainLayout />}>
+          <Route
+            path="/"
+            element={
               <PageTransition>
-                <CartPage />
+                <HomePage />
               </PageTransition>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/orders"
-          element={
-            <ProtectedRoute>
+            }
+          />
+          <Route
+            path="/products/:id"
+            element={
               <PageTransition>
-                <OrdersPage />
+                <ProductDetailPage />
               </PageTransition>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/orders/:id"
-          element={
-            <ProtectedRoute>
-              <PageTransition>
-                <OrderDetailPage />
-              </PageTransition>
-            </ProtectedRoute>
-          }
-        />
+            }
+          />
+          <Route
+            path="/cart"
+            element={
+              <ProtectedRoute>
+                <PageTransition>
+                  <CartPage />
+                </PageTransition>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <ProtectedRoute>
+                <PageTransition>
+                  <OrdersPage />
+                </PageTransition>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orders/:id"
+            element={
+              <ProtectedRoute>
+                <PageTransition>
+                  <OrderDetailPage />
+                </PageTransition>
+              </ProtectedRoute>
+            }
+          />
+        </Route>
         <Route
           path="/login"
           element={
