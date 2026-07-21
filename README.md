@@ -19,6 +19,7 @@
 ```bash
 npm install
 npm run dev
+npm test
 ```
 
 ## FSD 주요 폴더 구조
