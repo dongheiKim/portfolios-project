@@ -6,7 +6,7 @@ import {
   SIDEBAR_CATEGORY_LABELS,
   SIDEBAR_CATEGORY_ORDER,
   type SidebarCategoryId,
-} from "@/entities/category/model/sidebarCategories";
+} from "@/widgets/main-category-product-list";
 
 // 선택된 카테고리 안에서 보여줄 캐러셀 행(row) 정의
 const CAROUSEL_ROWS = [
