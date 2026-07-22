@@ -1,13 +1,4 @@
-export type ProductCategory =
-  | "electronics"
-  | "fashion"
-  | "food"
-  | "beauty"
-  | "sports"
-  | "home"
-  | "books"
-  | "toys"
-  | "etc";
+export type ProductCategory = string;
 
 export interface ProductDetail {
   id: number;
