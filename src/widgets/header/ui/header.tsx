@@ -29,7 +29,10 @@ export function Header() {
   const { orderCount, latestOrder, latestOrderStatusLabel } = useHeaderOrders();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#d9dee5] bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)]">
+    <header
+      id="site-header"
+      className="sticky top-0 z-50 border-b border-[#d9dee5] bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)]"
+    >
       <HeaderTopBar token={token} orderCount={orderCount} />
 
       <HeaderMainBar
