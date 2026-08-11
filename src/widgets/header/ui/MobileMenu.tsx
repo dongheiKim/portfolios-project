@@ -79,7 +79,7 @@ export function MobileMenu({
             최근 주문{" "}
             {latestOrder
               ? `#${latestOrder.id} · ${latestOrderStatusLabel}`
-              : `${latestOrder ? "1" : "0"}건`}
+              : "0건"}
           </Link>
         )}
       </div>

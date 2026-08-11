@@ -12,9 +12,10 @@ import type { Order } from "@/entities/order";
  */
 export function useHeaderOrders() {
   const token = useAuthStore((s) => s.token);
+  const userId = useAuthStore((s) => s.user?.id);
 
   const { data: ordersData } = useQuery({
-    queryKey: ["header-orders-preview"],
+    queryKey: ["header-orders-preview", userId],
     queryFn: fetchOrders,
     enabled: Boolean(token),
     staleTime: 1000 * 60 * 3,
@@ -30,7 +31,7 @@ export function useHeaderOrders() {
     orderCount,
     latestOrder,
     latestOrderStatusLabel,
-    isLoaded: Boolean(token),
+    isAuthenticated: Boolean(token),
   };
 }
 

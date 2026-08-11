@@ -55,9 +55,7 @@ export function HeaderNav({
           <PackageCheck size={18} />
           <div className="leading-tight">
             <p className="text-[11px] text-[#64748b]">최근 주문</p>
-            <p className="font-semibold text-[#111827]">
-              {latestOrder ? `#${latestOrder.id}` : "내역 보기"}
-            </p>
+            <p className="font-semibold text-[#111827]">#{latestOrder.id}</p>
           </div>
         </Link>
       )}
