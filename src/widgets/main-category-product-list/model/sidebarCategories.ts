@@ -55,6 +55,7 @@ export const SIDEBAR_CATEGORY_ORDER: SidebarCategoryId[] = [
   "toys",
   "office",
   "daily",
+  "health",
   "maternity",
   "kidsfashion",
   "kitchen",
