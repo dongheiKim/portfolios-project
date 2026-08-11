@@ -32,7 +32,7 @@ export function OptimizedImage({
       width={width}
       height={height}
       loading={priority ? "eager" : "lazy"}
-      decoding={priority ? "sync" : "async"}
+      decoding="async"
       // @ts-expect-error - fetchpriority는 표준 속성이나 TS 타입에 미포함
       fetchpriority={priority ? "high" : "low"}
       className={clsx(

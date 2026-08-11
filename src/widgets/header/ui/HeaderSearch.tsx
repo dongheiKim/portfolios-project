@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Search, ChevronDown } from "lucide-react";
 import { useFilterStore } from "@/features/product/filter-products";
-import { useDebounce } from "@/shared/hooks/useDebounce";
 
 /**
  * 헤더 검색 폼 컴포넌트
@@ -13,8 +12,6 @@ export function HeaderSearch() {
   const [searchInput, setSearchInput] = useState("");
   const setKeyword = useFilterStore((s) => s.setKeyword);
   const navigate = useNavigate();
-
-  useDebounce(searchInput, 400);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

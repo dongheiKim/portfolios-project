@@ -17,7 +17,7 @@ export function AddToCartButton({ productId, fullWidth = true }: Props) {
       size="sm"
       fullWidth={fullWidth}
       onClick={addToCart}
-      aria-label="장바구니에 담기"
+      aria-label={count > 0 ? `장바구니에 담긴 ${count}개, 추가 담기` : "장바구니에 담기"}
     >
       <ShoppingCart size={14} />
       {count > 0 ? `담긴 ${count}개` : "장바구니 담기"}

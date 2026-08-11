@@ -38,7 +38,7 @@ const badgeConfig: Record<
 export function Badge({ variant, label, value, className }: BadgeProps) {
   const config = badgeConfig[variant];
   const displayLabel =
-    variant === "discount" ? `${value}%` : (label ?? config.defaultLabel);
+    variant === "discount" ? `${value ?? 0}%` : (label ?? config.defaultLabel);
 
   return (
     <span

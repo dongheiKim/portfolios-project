@@ -71,20 +71,18 @@ export function ProductList({
   }
 
   return (
-    <div className="product-grid grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-      {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
-      ))}
-      {/*
-        다음 페이지를 불러오는 동안 기존 상품 카드는 그대로 유지하고,
-        하단에 인라인 로더만 추가로 보여 연속 탐색 흐름이 끊기지 않도록 한다.
-      */}
-      {isFetchingNextPage && <Loader2 />}
-      {/*
-        무한 스크롤 트리거용 센티넬 요소.
-        이 요소가 뷰포트에 진입하면 useEffect 조건에 따라 onLoadMore가 호출된다.
-      */}
+    <>
+      <div className="product-grid grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+      {isFetchingNextPage && (
+        <div className="flex justify-center py-4">
+          <Loader2 className="animate-spin text-[#346aff]" size={24} />
+        </div>
+      )}
       <div ref={ref} />
-    </div>
+    </>
   );
 }
