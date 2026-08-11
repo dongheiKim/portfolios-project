@@ -1,3 +1,8 @@
 export { Header } from "./header";
 export { Footer } from "./footer";
 export { ProductList } from "./product-list";
+export { MainCarousel } from "./main-carousel";
+export { MainAdvertisement } from "./main-advertisement";
+export { SellerSpecialCarousel } from "./seller-special-carousel";
+export { GlobalDealsCarousel } from "./global-deals-carousel";
+export { MainCategoryProductList } from "./main-category-product-list";

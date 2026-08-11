@@ -1,7 +1,7 @@
 import { MainCarousel } from "@/widgets/main-carousel";
 import { MainAdvertisement } from "@/widgets/main-advertisement";
-import { CarouselAdvertisement } from "@/widgets/carousel-advertisement";
-import { CategoryAdCarousel } from "@/widgets/category-ad-carousel";
+import { SellerSpecialCarousel } from "@/widgets/seller-special-carousel";
+import { GlobalDealsCarousel } from "@/widgets/global-deals-carousel";
 import { MainCategoryProductList } from "@/widgets/main-category-product-list";
 
 export function HomePage() {
@@ -9,8 +9,8 @@ export function HomePage() {
     <div>
       <MainCarousel />
       <MainAdvertisement />
-      <CarouselAdvertisement />
-      <CategoryAdCarousel />
+      <SellerSpecialCarousel />
+      <GlobalDealsCarousel />
       <MainCategoryProductList />
     </div>
   );
