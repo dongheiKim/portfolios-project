@@ -1,7 +1,8 @@
+import { apiClient } from "@/shared/api/client";
 import { Order, OrderStatus } from "../model/orderTypes";
 
 export interface CreateOrderPayload {
-  items: Pick<Order, "productId" | "quantity">[];
+  items: { productId: string; quantity: number }[];
   shippingAddress: Order["shippingAddress"];
 }
 
@@ -22,40 +23,16 @@ export function canOrderBeViewed(): boolean {
 }
 
 export function fetchOrderById(orderId: string): Promise<Order> {
-  return fetch(`/api/orders/${orderId}`)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Failed to fetch order");
-      }
-      return response.json();
-    })
-    .then((data) => data as Order);
+  return apiClient<Order>(`/orders/${orderId}`);
 }
 
 export function createOrder(payload: CreateOrderPayload): Promise<Order> {
-  return fetch("/api/orders", {
+  return apiClient<Order>("/orders", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(payload),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Failed to create order");
-      }
-      return response.json();
-    })
-    .then((data) => data as Order);
+  });
 }
 
 export function fetchOrders(): Promise<Order[]> {
-  return fetch("/api/orders")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Failed to fetch orders");
-      }
-      return response.json();
-    })
-    .then((data) => data as Order[]);
+  return apiClient<Order[]>("/orders");
 }

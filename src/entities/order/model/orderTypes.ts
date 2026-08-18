@@ -1,4 +1,5 @@
 export type Order = {
+  id: string;
   totalPrice: number;
   items: {
     productId: string;
@@ -7,14 +8,10 @@ export type Order = {
     productName: string;
     price: number;
   }[];
-  id: string;
-  productId: string;
-  quantity: number;
   status: OrderStatus;
   createdAt: Date;
   updatedAt: Date;
   shippingAddress: {
-    shippingAddress: string;
     recipient: string;
     phone: string;
     address: string;
@@ -26,12 +23,12 @@ export type Order = {
 };
 
 export enum OrderStatus {
-  paid = "paid",
-  preparing = "preparing",
-  shipping = "shipping",
-  delivered = "delivered",
+  Paid = "paid",
+  Preparing = "preparing",
+  Shipping = "shipping",
+  Delivered = "delivered",
   Pending = "pending",
-  refunded = "refunded",
+  Refunded = "refunded",
   Completed = "completed",
   Cancelled = "cancelled",
 }

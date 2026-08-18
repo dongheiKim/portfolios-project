@@ -111,20 +111,19 @@ export function findMockProductDetailById(id: number): ProductDetail {
   }
 
   return {
-    ...product,
     id: product.id,
     name: product.name,
-    category: product.category,
     price: product.price,
     originalPrice: product.originalPrice,
     discountRate: product.discountRate,
     imageUrls: [product.imageUrl],
-    description: product.description,
+    category: product.category,
     createdAt: new Date().toISOString(),
     details: {
       "제품 설명": product.description,
     },
     reviews: product.productDetail.reviews,
     questions: product.productDetail.questions,
+    description: product.description,
   };
 }
