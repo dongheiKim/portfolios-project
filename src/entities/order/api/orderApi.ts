@@ -1,8 +1,13 @@
 import { apiClient } from "@/shared/api/client";
 import { Order, OrderStatus } from "../model/orderTypes";
 
+export interface CreateOrderItemPayload {
+  productId: string;
+  quantity: number;
+}
+
 export interface CreateOrderPayload {
-  items: { productId: string; quantity: number }[];
+  items: CreateOrderItemPayload[];
   shippingAddress: Order["shippingAddress"];
 }
 
