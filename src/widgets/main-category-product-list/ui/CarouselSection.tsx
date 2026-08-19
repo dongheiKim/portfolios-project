@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ProductCard, type ProductSummary } from "@/entities/product";
+import { AddToCartButton } from "@/features/cart/add-to-cart";
 import {
   CAROUSEL_ARROW_BUTTON_CLASS,
   CAROUSEL_TITLE_CLASS,
@@ -57,7 +58,10 @@ export function CarouselSection({
       <div ref={registerRef} className={CAROUSEL_TRACK_CLASS}>
         {products.map((product) => (
           <div key={`${rowKey}-${product.id}`} className={itemClassName}>
-            <ProductCard product={product} />
+            <ProductCard
+              product={product}
+              actions={<AddToCartButton productId={product.id} />}
+            />
           </div>
         ))}
       </div>

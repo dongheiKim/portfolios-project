@@ -1,16 +1,17 @@
+import type { ReactNode } from "react";
 import { Link } from "react-router";
 import { Star } from "lucide-react";
 import { formatPrice } from "@/shared/lib/format";
 import { Badge } from "@/shared/ui/Badge";
 import { OptimizedImage } from "@/shared/ui/OptimizedImage";
-import { AddToCartButton } from "@/features/cart/add-to-cart";
 import type { ProductSummary } from "../model/productTypes";
 
 interface ProductCardProps {
   product: ProductSummary;
+  actions?: ReactNode;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, actions }: ProductCardProps) {
   return (
     <article
       className="group flex h-full flex-col overflow-hidden rounded-[20px] border border-[#e7edf5] bg-white shadow-[0_10px_25px_rgba(15,23,42,0.04)] transition-all hover:-translate-y-1 hover:border-[#bfd1ff] hover:shadow-[0_18px_38px_rgba(52,106,255,0.16)]"
@@ -97,9 +98,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
       </Link>
 
-      <div className="mt-auto px-4 pb-4">
-        <AddToCartButton productId={product.id} />
-      </div>
+      {actions != null && <div className="mt-auto px-4 pb-4">{actions}</div>}
     </article>
   );
 }
