@@ -32,16 +32,3 @@ export enum OrderStatus {
   Completed = "completed",
   Cancelled = "cancelled",
 }
-
-export type OrderSummary = {
-  totalOrders: number;
-  completedOrders: number;
-  pendingOrders: number;
-  cancelledOrders: number;
-};
-
-export type OrderDetails = {
-  order: Order;
-  productName: string;
-  productPrice: number;
-};

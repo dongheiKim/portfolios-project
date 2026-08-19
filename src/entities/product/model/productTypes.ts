@@ -30,29 +30,3 @@ export interface ProductSummary {
   productDetail: ProductDetail;
   description: string;
 }
-
-export interface Review {
-  id: number;
-  productId: number;
-  rating: number;
-  comment: string;
-  reviewer: string;
-  date: string;
-}
-
-export interface Question {
-  id: number;
-  productId: number;
-  question: string;
-  answer?: string;
-  asker: string;
-  date: string;
-}
-
-export interface Answer {
-  id: number;
-  questionId: number;
-  answer: string;
-  responder: string;
-  date: string;
-}
