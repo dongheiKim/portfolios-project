@@ -4,7 +4,7 @@ import { MAIN_ADVERTISEMENT_CARDS } from "../model/mainAdvertisementCards";
 export function MainAdvertisement() {
   return (
     <section className="main-advertisement mx-auto max-w-[1400px] px-3 pt-6 md:px-6">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 md:gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-6">
         {MAIN_ADVERTISEMENT_CARDS.map((card) => {
           const content = (
             <>

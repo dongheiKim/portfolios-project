@@ -42,7 +42,7 @@ export function AdCarouselSection({ title, items }: AdCarouselSectionProps) {
                 key={direction}
                 type="button"
                 onClick={() => handleScroll(direction)}
-                className="rounded-full border border-[#d6deec] bg-white p-2 text-[#334155] transition hover:border-[#a7bbdf] hover:text-[#1d4ed8]"
+                className="rounded-full border border-[#d6deec] bg-white p-2 text-[#334155] transition hover:border-[#a7bbdf] hover:text-[#1d4ed8] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2"
                 aria-label={`${title} ${isLeft ? "이전" : "다음"} 상품 보기`}
               >
                 {isLeft ? (

@@ -48,7 +48,6 @@ export function BannerCarousel({
 
         <div
           className="absolute inset-x-0 bottom-3 flex justify-center gap-2"
-          role="tablist"
           aria-label="배너 선택"
         >
           {slides.map((slide, index) => {
@@ -58,8 +57,7 @@ export function BannerCarousel({
                 key={slide.id}
                 type="button"
                 onClick={() => handleSelect(index)}
-                role="tab"
-                aria-selected={isActive}
+                aria-current={isActive}
                 aria-label={`배너 ${index + 1}로 이동`}
                 className={`h-2 rounded-full transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
                   isActive

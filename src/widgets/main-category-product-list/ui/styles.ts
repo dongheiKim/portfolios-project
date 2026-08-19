@@ -13,7 +13,7 @@ export const CAROUSEL_TITLE_CLASS =
   "text-sm font-black tracking-[-0.02em] text-[#0f172a] @sm/card:text-base";
 
 export const CAROUSEL_ARROW_BUTTON_CLASS =
-  "rounded-full border border-[#d6deec] bg-white p-2 text-[#334155] transition hover:border-[#a7bbdf] hover:text-[#1d4ed8]";
+  "rounded-full border border-[#d6deec] bg-white p-2 text-[#334155] transition hover:border-[#a7bbdf] hover:text-[#1d4ed8] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2";
 
 export const CAROUSEL_TRACK_CLASS =
   "flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
