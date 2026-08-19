@@ -28,7 +28,7 @@ export function SignInForm() {
       const { token, user } = await signIn({ email, password });
       login(user, token);
       navigate("/");
-    } catch (err) {
+    } catch {
       setErrors({ general: "이메일 또는 비밀번호가 올바르지 않습니다." });
     } finally {
       setIsLoading(false);
