@@ -42,7 +42,7 @@ export function MobileMenu({
             <button
               key={link}
               type="button"
-              className="justify-start rounded-lg border border-[#e5ebf5] px-3 py-2"
+              className="justify-start rounded-lg border border-[#e5ebf5] px-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2"
               onClick={onClose}
             >
               {link}

@@ -36,7 +36,7 @@ export function HeaderSearch() {
         />
         <button
           type="submit"
-          className="h-12 px-4 text-white transition-colors hover:bg-[#1d55ef] bg-[#346aff]"
+          className="h-12 px-4 text-white transition-colors hover:bg-[#1d55ef] bg-[#346aff] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2"
           aria-label="검색"
         >
           <Search size={20} />

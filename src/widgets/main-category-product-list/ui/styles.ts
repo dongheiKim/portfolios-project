@@ -30,7 +30,7 @@ export const SIDEBAR_MOBILE_CHIP_CONTAINER_CLASS =
   "flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:hidden";
 
 export const SIDEBAR_MOBILE_CHIP_BASE_CLASS =
-  "shrink-0 whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition";
+  "shrink-0 whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2";
 
 export const SIDEBAR_MOBILE_CHIP_ACTIVE_CLASS =
   "border-[#2563eb] bg-[#eef4ff] text-[#1d4ed8]";
@@ -41,7 +41,7 @@ export const SIDEBAR_MOBILE_CHIP_INACTIVE_CLASS =
 export const SIDEBAR_DESKTOP_LIST_CLASS = "hidden space-y-2 md:block";
 
 export const SIDEBAR_DESKTOP_ITEM_BASE_CLASS =
-  "flex w-full items-center justify-between rounded-xl border px-3 py-2 text-sm font-semibold transition";
+  "flex w-full items-center justify-between rounded-xl border px-3 py-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2";
 
 export const SIDEBAR_DESKTOP_ITEM_ACTIVE_CLASS =
   "border-[#2563eb] bg-[#eef4ff] text-[#1d4ed8]";

@@ -30,7 +30,7 @@ export function HeaderMainBar({
       <div className="flex items-center gap-3 lg:gap-5">
         <button
           type="button"
-          className="hidden md:inline-flex h-13 w-13 shrink-0 rounded-sm bg-[#346aff] text-white hover:bg-[#1d55ef]"
+          className="hidden md:inline-flex h-13 w-13 shrink-0 rounded-sm bg-[#346aff] text-white hover:bg-[#1d55ef] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2"
           aria-label="카테고리 메뉴"
         >
           <Menu size={22} />
@@ -56,7 +56,7 @@ export function HeaderMainBar({
 
         <button
           type="button"
-          className="ml-auto text-[#24364d] md:hidden"
+          className="ml-auto rounded-sm text-[#24364d] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2 md:hidden"
           onClick={onMobileMenuToggle}
           aria-label="메뉴 열기"
         >

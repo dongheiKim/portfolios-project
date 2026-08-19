@@ -47,7 +47,7 @@ export function Header() {
         <div className="absolute right-4 top-4 md:hidden">
           <button
             type="button"
-            className="text-[#24364d]"
+            className="rounded-sm text-[#24364d] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2"
             onClick={() => setMobileMenuOpen(false)}
             aria-label="메뉴 닫기"
           >

@@ -67,7 +67,7 @@ export function MainCarousel({
               onClick={() => handleSelect(index)}
               aria-label={`${slide.title} 배너로 이동`}
               aria-current={isActive}
-              className={`relative aspect-video w-20 shrink-0 overflow-hidden rounded-lg border-2 transition sm:w-28 ${
+              className={`relative aspect-video w-20 shrink-0 overflow-hidden rounded-lg border-2 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2 sm:w-28 ${
                 isActive
                   ? "border-[#2563eb]"
                   : "border-transparent opacity-70 hover:opacity-100"

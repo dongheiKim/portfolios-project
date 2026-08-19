@@ -26,7 +26,7 @@ export function HeaderQuickActions({
           <button
             key={link}
             type="button"
-            className="whitespace-nowrap transition-colors hover:text-[#346aff]"
+            className="whitespace-nowrap rounded-sm transition-colors hover:text-[#346aff] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2"
           >
             {link}
           </button>
