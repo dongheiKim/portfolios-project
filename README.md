@@ -9,9 +9,8 @@
 | UI          | React 19, TypeScript 6, Tailwind CSS 4 |
 | 라우팅      | React Router v7                        |
 | 상태/서버   | Zustand 5, TanStack Query 5            |
-| 실시간      | Socket.io, simple-peer                 |
-| 인터랙션    | Framer Motion 12, @hello-pangea/dnd    |
-| UI 컴포넌트 | Radix UI, lucide-react                 |
+| 인터랙션    | Framer Motion 12                       |
+| UI 컴포넌트 | lucide-react                           |
 | 빌드        | Vite 8                                 |
 
 ## 시작하기
