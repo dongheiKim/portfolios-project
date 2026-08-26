@@ -30,9 +30,23 @@ export function CarouselSection({
 }: CarouselSectionProps) {
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between gap-3">
-        <h3 className={CAROUSEL_TITLE_CLASS}>{title}</h3>
-        <div className={`hidden items-center gap-2 ${arrowsClassName}`}>
+      <h3 className={`mb-2 ${CAROUSEL_TITLE_CLASS}`}>{title}</h3>
+
+      <div className="group relative">
+        <div ref={registerRef} className={CAROUSEL_TRACK_CLASS}>
+          {products.map((product) => (
+            <div key={`${rowKey}-${product.id}`} className={itemClassName}>
+              <ProductCard
+                product={product}
+                actions={<AddToCartButton productId={product.id} />}
+              />
+            </div>
+          ))}
+        </div>
+
+        <div
+          className={`pointer-events-none absolute inset-y-0 left-0 right-0 hidden items-center justify-between px-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 ${arrowsClassName}`}
+        >
           {ARROW_DIRECTIONS.map((direction) => {
             const isLeft = direction === "left";
 
@@ -41,7 +55,7 @@ export function CarouselSection({
                 key={direction}
                 type="button"
                 onClick={() => onScroll(rowKey, direction)}
-                className={CAROUSEL_ARROW_BUTTON_CLASS}
+                className={`pointer-events-auto ${isLeft ? "-translate-x-1/2" : "translate-x-1/2"} ${CAROUSEL_ARROW_BUTTON_CLASS}`}
                 aria-label={`${title} ${isLeft ? "이전" : "다음"} 상품 보기`}
               >
                 {isLeft ? (
@@ -53,17 +67,6 @@ export function CarouselSection({
             );
           })}
         </div>
-      </div>
-
-      <div ref={registerRef} className={CAROUSEL_TRACK_CLASS}>
-        {products.map((product) => (
-          <div key={`${rowKey}-${product.id}`} className={itemClassName}>
-            <ProductCard
-              product={product}
-              actions={<AddToCartButton productId={product.id} />}
-            />
-          </div>
-        ))}
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ export function MainAdvertisement() {
                 <OptimizedImage
                   src={card.image}
                   alt={card.title}
-                  className="h-full w-full transition-transform duration-300 group-hover:scale-105"
+                  className="h-full w-full"
                 />
               </div>
               <p className="mt-2 line-clamp-2 text-sm font-semibold text-[#162032] md:text-base">

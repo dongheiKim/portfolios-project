@@ -54,33 +54,33 @@ export function MainCarousel({
             </p>
           )}
         </div>
-      </div>
 
-      <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {slides.map((slide, index) => {
-          const isActive = index === activeIndex;
+        <div className="absolute right-2 top-1/2 flex max-h-[80%] -translate-y-1/2 flex-col gap-2 overflow-y-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:right-4 sm:gap-3">
+          {slides.map((slide, index) => {
+            const isActive = index === activeIndex;
 
-          return (
-            <button
-              key={slide.id}
-              type="button"
-              onClick={() => handleSelect(index)}
-              aria-label={`${slide.title} 배너로 이동`}
-              aria-current={isActive}
-              className={`relative aspect-video w-20 shrink-0 overflow-hidden rounded-lg border-2 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2 sm:w-28 ${
-                isActive
-                  ? "border-[#2563eb]"
-                  : "border-transparent opacity-70 hover:opacity-100"
-              }`}
-            >
-              <OptimizedImage
-                src={slide.image}
-                alt={slide.title}
-                className="h-full w-full"
-              />
-            </button>
-          );
-        })}
+            return (
+              <button
+                key={slide.id}
+                type="button"
+                onClick={() => handleSelect(index)}
+                aria-label={`${slide.title} 배너로 이동`}
+                aria-current={isActive}
+                className={`relative aspect-video w-14 shrink-0 overflow-hidden rounded-lg border-2 shadow-[0_4px_12px_rgba(15,23,42,0.25)] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2 sm:w-20 ${
+                  isActive
+                    ? "border-[#2563eb]"
+                    : "border-white/70 opacity-70 hover:opacity-100"
+                }`}
+              >
+                <OptimizedImage
+                  src={slide.image}
+                  alt={slide.title}
+                  className="h-full w-full"
+                />
+              </button>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

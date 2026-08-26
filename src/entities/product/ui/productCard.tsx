@@ -26,7 +26,7 @@ export function ProductCard({ product, actions }: ProductCardProps) {
           <OptimizedImage
             src={product.imageUrl}
             alt={product.name}
-            className="h-full w-full transition-transform duration-300 group-hover:scale-105"
+            className="h-full w-full"
           />
           {product.discountRate != null && product.discountRate > 0 && (
             <span className="absolute left-3 top-3">

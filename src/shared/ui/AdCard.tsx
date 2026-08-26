@@ -12,7 +12,7 @@ export function AdCard({ item }: AdCardProps) {
         <OptimizedImage
           src={item.image}
           alt={item.title}
-          className="h-full w-full transition-transform duration-300 group-hover:scale-105"
+          className="h-full w-full"
         />
         {item.badge && (
           <span className="absolute left-2 top-2 rounded-full bg-[#e11937] px-2 py-0.5 text-xs font-bold text-white">
