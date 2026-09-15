@@ -92,3 +92,4 @@ package-lock.json
 .Todo/
 .Fix/
 .Bug/
+*CLAUDE/
