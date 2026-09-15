@@ -1,18 +1,16 @@
 import { create } from "zustand";
-import type { ProductCategory } from "@/entities/product";
-
-type SortBy = "price_asc" | "price_desc" | "rating" | "newest";
+import type { ProductCategory, ProductSortBy } from "@/entities/product";
 
 interface FilterState {
   keyword: string;
   category: ProductCategory | null;
   minPrice: number | null;
   maxPrice: number | null;
-  sortBy: SortBy;
+  sortBy: ProductSortBy;
   setKeyword: (keyword: string) => void;
   setCategory: (category: ProductCategory | null) => void;
   setPriceRange: (min: number | null, max: number | null) => void;
-  setSortBy: (sortBy: SortBy) => void;
+  setSortBy: (sortBy: ProductSortBy) => void;
   resetFilters: () => void;
 }
 
@@ -21,7 +19,7 @@ const defaultState = {
   category: null as ProductCategory | null,
   minPrice: null as number | null,
   maxPrice: null as number | null,
-  sortBy: "newest" as SortBy,
+  sortBy: "newest" as ProductSortBy,
 };
 
 export const useFilterStore = create<FilterState>((set) => ({

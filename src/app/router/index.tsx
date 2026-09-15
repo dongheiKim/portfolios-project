@@ -3,6 +3,7 @@ import { AnimatePresence } from "framer-motion";
 import { MainLayout } from "@/app/layouts/MainLayout";
 import { HomePage } from "@/pages/home";
 import { ProductDetailPage } from "@/pages/product-detail";
+import { SearchPage } from "@/pages/search";
 import { CartPage } from "@/pages/cart";
 import { LoginPage } from "@/pages/login";
 import { SignupPage } from "@/pages/signup";
@@ -38,6 +39,14 @@ export function AppRouter() {
             element={
               <PageTransition>
                 <ProductDetailPage />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <PageTransition>
+                <SearchPage />
               </PageTransition>
             }
           />

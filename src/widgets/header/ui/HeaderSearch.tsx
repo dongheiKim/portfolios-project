@@ -16,7 +16,7 @@ export function HeaderSearch() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setKeyword(searchInput);
-    navigate("/");
+    navigate("/search");
   };
 
   return (

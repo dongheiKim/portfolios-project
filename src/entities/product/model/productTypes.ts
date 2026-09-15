@@ -1,5 +1,7 @@
 export type ProductCategory = string;
 
+export type ProductSortBy = "price_asc" | "price_desc" | "rating" | "newest";
+
 export interface ProductDetail {
   id: number;
   name: string;
