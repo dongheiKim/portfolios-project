@@ -26,8 +26,8 @@ export function HeaderMainBar({
   onMobileMenuToggle,
 }: HeaderMainBarProps) {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-4">
-      <div className="flex items-center gap-3 lg:gap-5">
+    <div className="mx-auto w-full max-w-7xl px-4 py-4">
+      <div className="flex min-w-0 items-center gap-3 lg:gap-5">
         <button
           type="button"
           className="hidden md:inline-flex h-13 w-13 shrink-0 rounded-sm bg-[#346aff] text-white hover:bg-[#1d55ef] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2"

@@ -1,7 +1,13 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 const MAX_QUANTITY = 99;
+
+const memoryStorage = {
+  getItem: () => null,
+  setItem: () => undefined,
+  removeItem: () => undefined,
+};
 
 export interface CartItem {
   productId: number;
@@ -52,6 +58,11 @@ export const useCartStore = create<CartState>()(
         })),
       clearCart: () => set({ items: [] }),
     }),
-    { name: "cart-storage" },
+    {
+      name: "cart-storage",
+      storage: createJSONStorage(() =>
+        typeof localStorage === "undefined" ? memoryStorage : localStorage,
+      ),
+    },
   ),
 );

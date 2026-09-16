@@ -20,7 +20,7 @@ export function HeaderSearch() {
   };
 
   return (
-    <form onSubmit={handleSearch} className="flex-1 max-w-3xl">
+    <form onSubmit={handleSearch} className="min-w-0 max-w-3xl flex-1">
       <div className="flex items-center overflow-hidden rounded-sm border-2 border-[#346aff] bg-white shadow-[0_8px_20px_rgba(52,106,255,0.08)]">
         <div className="hidden items-center gap-1 border-r border-[#dbe4ff] px-3 text-sm font-medium text-[#24364d] sm:flex">
           전체 카테고리
@@ -31,7 +31,7 @@ export function HeaderSearch() {
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           placeholder="찾고 싶은 상품을 검색해 보세요"
-          className="flex-1 px-4 py-3 text-sm text-gray-800 outline-none placeholder:text-[#94a0b4]"
+          className="min-w-0 flex-1 px-4 py-3 text-sm text-gray-800 outline-none placeholder:text-[#94a0b4]"
           aria-label="상품 검색"
         />
         <button
