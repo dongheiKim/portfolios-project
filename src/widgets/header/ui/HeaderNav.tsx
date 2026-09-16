@@ -59,8 +59,8 @@ export function HeaderNav({
           </div>
         </Link>
       )}
-      <div className="rounded-2xl border border-[#e5ebf5] bg-[#f8fbff] px-3 py-2">
-        <UserBadge user={user} />
+      <div className="rounded-2xl border border-[#e5ebf5] bg-[#f8fbff] px-3 py-2 transition-colors hover:border-[#bfd1ff] hover:text-[#346aff]">
+        <UserBadge user={user} to="/mypage" />
       </div>
       <Link
         to="/cart"

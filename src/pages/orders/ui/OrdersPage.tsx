@@ -1,8 +1,8 @@
 import { Link } from "react-router";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight, Package } from "lucide-react";
-import { fetchOrders } from "@/entities/order";
-import type { OrderStatus } from "@/entities/order";
+import { fetchOrders, OrderStatus } from "@/entities/order";
 import { formatPrice } from "@/shared/lib/format";
 import { SectionSkeleton } from "@/shared/ui/Skeleton";
 
@@ -17,7 +17,19 @@ const statusLabel: Record<OrderStatus, string> = {
   completed: "완료됨",
 };
 
+const statusOptions: { value: OrderStatus | "all"; label: string }[] = [
+  { value: "all", label: "전체 주문" },
+  { value: OrderStatus.Pending, label: "결제 대기" },
+  { value: OrderStatus.Paid, label: "결제 완료" },
+  { value: OrderStatus.Preparing, label: "상품 준비 중" },
+  { value: OrderStatus.Shipping, label: "배송 중" },
+  { value: OrderStatus.Delivered, label: "배송 완료" },
+  { value: OrderStatus.Completed, label: "완료됨" },
+  { value: OrderStatus.Cancelled, label: "취소됨" },
+];
+
 export function OrdersPage() {
+  const [statusFilter, setStatusFilter] = useState<OrderStatus | "all">("all");
   const {
     data: orders,
     isLoading,
@@ -26,6 +38,13 @@ export function OrdersPage() {
     queryKey: ["orders"],
     queryFn: fetchOrders,
   });
+  const filteredOrders = useMemo(
+    () =>
+      orders?.filter(
+        (order) => statusFilter === "all" || order.status === statusFilter,
+      ) ?? [],
+    [orders, statusFilter],
+  );
 
   return (
     <div className="coupang-shell min-h-screen flex flex-col bg-[#f4f7fb]">
@@ -50,6 +69,30 @@ export function OrdersPage() {
           </div>
         )}
 
+        {orders && orders.length > 0 && (
+          <div
+            className="mb-5 flex flex-wrap gap-2"
+            role="group"
+            aria-label="주문 상태 필터"
+          >
+            {statusOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                aria-pressed={statusFilter === option.value}
+                onClick={() => setStatusFilter(option.value)}
+                className={`rounded-full border px-3 py-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2 ${
+                  statusFilter === option.value
+                    ? "border-[#346aff] bg-[#eef4ff] text-[#346aff]"
+                    : "border-[#e4ebf3] bg-white text-[#64748b] hover:border-[#bfd1ff]"
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        )}
+
         {orders && orders.length === 0 && (
           <div className="rounded-[28px] border border-[#e4ebf3] bg-white py-20 text-center text-[#64748b] shadow-[0_18px_45px_rgba(15,23,42,0.05)]">
             <Package
@@ -61,9 +104,15 @@ export function OrdersPage() {
           </div>
         )}
 
-        {orders && orders.length > 0 && (
+        {orders && orders.length > 0 && filteredOrders.length === 0 && (
+          <div className="rounded-[28px] border border-[#e4ebf3] bg-white py-16 text-center text-[#64748b]">
+            <p className="text-lg font-medium">해당 상태의 주문이 없습니다.</p>
+          </div>
+        )}
+
+        {filteredOrders.length > 0 && (
           <div className="flex flex-col gap-4">
-            {orders.map((order) => (
+            {filteredOrders.map((order) => (
               <Link
                 key={order.id}
                 to={`/orders/${order.id}`}
