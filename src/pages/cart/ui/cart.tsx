@@ -140,9 +140,11 @@ export function CartPage() {
                   <span>총 결제 금액</span>
                   <span>{formatPrice(totalPrice)}</span>
                 </div>
-                <Button type="button" className="mt-5" fullWidth>
-                  주문하기
-                </Button>
+                <Link to="/checkout" className="mt-5 block">
+                  <Button type="button" fullWidth>
+                    주문하기
+                  </Button>
+                </Link>
               </div>
             </aside>
           </div>

@@ -1,5 +1,5 @@
 import { apiClient } from "@/shared/api/client";
-import { Order } from "../model/orderTypes";
+import type { CreateOrderPayload, Order } from "../model/orderTypes";
 
 export function fetchOrderById(orderId: string): Promise<Order> {
   return apiClient<Order>(`/orders/${orderId}`);
@@ -7,4 +7,11 @@ export function fetchOrderById(orderId: string): Promise<Order> {
 
 export function fetchOrders(): Promise<Order[]> {
   return apiClient<Order[]>("/orders");
+}
+
+export function createOrder(payload: CreateOrderPayload): Promise<Order> {
+  return apiClient<Order>("/orders", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }

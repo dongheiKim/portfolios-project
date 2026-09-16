@@ -1,3 +1,8 @@
-export type { Order } from "./model/orderTypes";
+export type {
+  CreateOrderItem,
+  CreateOrderPayload,
+  Order,
+  ShippingAddress,
+} from "./model/orderTypes";
 export { OrderStatus } from "./model/orderTypes";
-export { fetchOrderById, fetchOrders } from "./api/orderApi";
+export { createOrder, fetchOrderById, fetchOrders } from "./api/orderApi";

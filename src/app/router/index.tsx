@@ -5,6 +5,8 @@ import { HomePage } from "@/pages/home";
 import { ProductDetailPage } from "@/pages/product-detail";
 import { SearchPage } from "@/pages/search";
 import { CartPage } from "@/pages/cart";
+import { CheckoutPage } from "@/pages/checkout";
+import { MyPage } from "@/pages/mypage";
 import { LoginPage } from "@/pages/login";
 import { SignupPage } from "@/pages/signup";
 import { NotFoundPage } from "@/pages/not-found";
@@ -56,6 +58,26 @@ export function AppRouter() {
               <ProtectedRoute>
                 <PageTransition>
                   <CartPage />
+                </PageTransition>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <PageTransition>
+                  <CheckoutPage />
+                </PageTransition>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mypage"
+            element={
+              <ProtectedRoute>
+                <PageTransition>
+                  <MyPage />
                 </PageTransition>
               </ProtectedRoute>
             }

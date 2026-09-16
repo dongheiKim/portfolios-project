@@ -22,6 +22,22 @@ export type Order = {
   };
 };
 
+export type CreateOrderItem = {
+  productId: number;
+  quantity: number;
+  productImage: string;
+  productName: string;
+  price: number;
+};
+
+export type ShippingAddress = Order["shippingAddress"];
+
+export type CreateOrderPayload = {
+  items: CreateOrderItem[];
+  shippingAddress: ShippingAddress;
+  paymentMethod: "card" | "account" | "phone";
+};
+
 export enum OrderStatus {
   Paid = "paid",
   Preparing = "preparing",
