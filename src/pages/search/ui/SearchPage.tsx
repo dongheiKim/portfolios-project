@@ -6,6 +6,7 @@ import {
 } from "@/entities/product";
 import { AddToCartButton } from "@/features/cart/add-to-cart";
 import { useFilterStore } from "@/features/product/filter-products";
+import { WishlistButton } from "@/features/product/wishlist";
 import { SectionSkeleton } from "@/shared/ui/Skeleton";
 
 const SORT_OPTIONS: { value: ProductSortBy; label: string }[] = [
@@ -95,6 +96,7 @@ export function SearchPage() {
                 key={product.id}
                 product={product}
                 actions={<AddToCartButton productId={product.id} />}
+                wishlistSlot={<WishlistButton productId={product.id} />}
               />
             ))}
           </div>

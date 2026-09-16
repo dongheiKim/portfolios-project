@@ -4,11 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, MessageCircle, Star } from "lucide-react";
 import { fetchProductById } from "@/entities/product";
 import type { ProductDetail } from "@/entities/product";
+import { fetchReviewsByProductId } from "@/entities/review";
 import { AddToCartButton } from "@/features/cart/add-to-cart";
+import { WishlistButton } from "@/features/product/wishlist";
 import { pushRecentViewedProduct } from "@/shared/hooks/useRecentViewedProducts";
 import { formatPrice } from "@/shared/lib/format";
 import { OptimizedImage } from "@/shared/ui/OptimizedImage";
-import { HeroSkeleton, SectionSkeleton } from "@/shared/ui/Skeleton";
+import { HeroSkeleton, SectionSkeleton, Skeleton } from "@/shared/ui/Skeleton";
 
 function ProductGallery({ product }: { product: ProductDetail }) {
   const [activeImage, setActiveImage] = useState(0);
@@ -39,6 +41,70 @@ function ProductGallery({ product }: { product: ProductDetail }) {
             >
               <OptimizedImage src={url} alt="" className="h-full w-full" />
             </button>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function ReviewSection({ productId }: { productId: number }) {
+  const { data: reviews, isLoading } = useQuery({
+    queryKey: ["reviews", productId],
+    queryFn: () => fetchReviewsByProductId(productId),
+  });
+
+  return (
+    <section className="mt-8 rounded-[24px] border border-[#e4ebf3] bg-white p-6 shadow-[0_14px_35px_rgba(15,23,42,0.05)]">
+      <h2 className="mb-4 font-black text-[#111827]">
+        상품 리뷰{reviews ? ` (${reviews.length})` : ""}
+      </h2>
+
+      {isLoading && (
+        <div className="flex flex-col gap-3">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <Skeleton key={index} className="h-16 w-full" />
+          ))}
+        </div>
+      )}
+
+      {!isLoading && reviews && reviews.length === 0 && (
+        <p className="text-sm text-[#64748b]">아직 등록된 리뷰가 없습니다.</p>
+      )}
+
+      {!isLoading && reviews && reviews.length > 0 && (
+        <div className="flex flex-col divide-y divide-[#edf2f7]">
+          {reviews.map((review) => (
+            <div key={review.id} className="py-4 first:pt-0 last:pb-0">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-[#111827]">
+                  {review.author}
+                </span>
+                <span className="text-xs text-[#94a3b8]">
+                  {new Date(review.createdAt).toLocaleDateString("ko-KR")}
+                </span>
+              </div>
+              <div
+                className="mt-1 flex items-center gap-0.5"
+                aria-label={`평점 ${review.rating}점`}
+              >
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <Star
+                    key={index}
+                    size={12}
+                    aria-hidden="true"
+                    className={
+                      index < review.rating
+                        ? "fill-[#ffb600] text-[#ffb600]"
+                        : "text-[#e4ebf3]"
+                    }
+                  />
+                ))}
+              </div>
+              <p className="mt-2 text-sm leading-6 text-[#516074]">
+                {review.content}
+              </p>
+            </div>
           ))}
         </div>
       )}
@@ -134,8 +200,14 @@ export function ProductDetailPage() {
                     </p>
                   )}
 
-                <div className="mt-5">
-                  <AddToCartButton productId={product.id} />
+                <div className="mt-5 flex items-center gap-2">
+                  <div className="flex-1">
+                    <AddToCartButton productId={product.id} />
+                  </div>
+                  <WishlistButton
+                    productId={product.id}
+                    className="h-11 w-11"
+                  />
                 </div>
               </div>
 
@@ -158,6 +230,8 @@ export function ProductDetailPage() {
             </section>
           </div>
         )}
+
+        {product && <ReviewSection productId={product.id} />}
       </main>
     </div>
   );

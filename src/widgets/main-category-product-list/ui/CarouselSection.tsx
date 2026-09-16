@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ProductCard, type ProductSummary } from "@/entities/product";
 import { AddToCartButton } from "@/features/cart/add-to-cart";
+import { WishlistButton } from "@/features/product/wishlist";
 import {
   CAROUSEL_ARROW_BUTTON_CLASS,
   CAROUSEL_TITLE_CLASS,
@@ -39,6 +40,7 @@ export function CarouselSection({
               <ProductCard
                 product={product}
                 actions={<AddToCartButton productId={product.id} />}
+                wishlistSlot={<WishlistButton productId={product.id} />}
               />
             </div>
           ))}

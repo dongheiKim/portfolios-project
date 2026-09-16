@@ -9,9 +9,14 @@ import type { ProductSummary } from "../model/productTypes";
 interface ProductCardProps {
   product: ProductSummary;
   actions?: ReactNode;
+  wishlistSlot?: ReactNode;
 }
 
-export function ProductCard({ product, actions }: ProductCardProps) {
+export function ProductCard({
+  product,
+  actions,
+  wishlistSlot,
+}: ProductCardProps) {
   return (
     <article
       className="group flex h-full flex-col overflow-hidden rounded-[20px] border border-[#e7edf5] bg-white shadow-[0_10px_25px_rgba(15,23,42,0.04)] transition-all hover:-translate-y-1 hover:border-[#bfd1ff] hover:shadow-[0_18px_38px_rgba(52,106,255,0.16)]"
@@ -32,6 +37,9 @@ export function ProductCard({ product, actions }: ProductCardProps) {
             <span className="absolute left-3 top-3">
               <Badge variant="discount" value={product.discountRate} />
             </span>
+          )}
+          {wishlistSlot != null && (
+            <span className="absolute right-3 top-3">{wishlistSlot}</span>
           )}
         </div>
 
