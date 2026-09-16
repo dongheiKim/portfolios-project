@@ -9,7 +9,7 @@ export async function fetchProductById(id: number): Promise<ProductDetail> {
   return findMockProductDetailById(id);
 }
 
-export interface ProductSearchFilters {
+interface ProductSearchFilters {
   keyword: string;
   category: string | null;
   minPrice: number | null;

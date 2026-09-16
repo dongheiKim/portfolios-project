@@ -6,8 +6,8 @@ import {
   type SidebarCategoryId,
 } from "./sidebarCategories";
 
-export const FEATURED_COUNT = 5;
-export const GRID_COUNT = 8;
+const FEATURED_COUNT = 5;
+const GRID_COUNT = 8;
 export const FEATURED_ROW = {
   key: "featured",
   title: "오늘의 추천",

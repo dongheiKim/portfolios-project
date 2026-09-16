@@ -9,7 +9,7 @@ const memoryStorage = {
   removeItem: () => undefined,
 };
 
-export interface CartItem {
+interface CartItem {
   productId: number;
   quantity: number;
 }

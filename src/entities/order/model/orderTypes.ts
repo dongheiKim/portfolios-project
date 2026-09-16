@@ -22,7 +22,7 @@ export type Order = {
   };
 };
 
-export type CreateOrderItem = {
+type CreateOrderItem = {
   productId: number;
   quantity: number;
   productImage: string;
