@@ -8,7 +8,7 @@ import { fetchReviewsByProductId } from "@/entities/review";
 import { AddToCartButton } from "@/features/cart/add-to-cart";
 import { WishlistButton } from "@/features/product/wishlist";
 import { pushRecentViewedProduct } from "@/shared/hooks/useRecentViewedProducts";
-import { formatPrice } from "@/shared/lib/format";
+import { formatDate, formatPrice } from "@/shared/lib/format";
 import { OptimizedImage } from "@/shared/ui/OptimizedImage";
 import { HeroSkeleton, SectionSkeleton, Skeleton } from "@/shared/ui/Skeleton";
 
@@ -32,6 +32,7 @@ function ProductGallery({ product }: { product: ProductDetail }) {
               key={url}
               type="button"
               onClick={() => setActiveImage(index)}
+              aria-current={activeImage === index ? "true" : undefined}
               aria-label={`이미지 ${index + 1} 보기`}
               className={`h-16 w-16 overflow-hidden rounded-xl border-2 ${
                 activeImage === index
@@ -49,7 +50,12 @@ function ProductGallery({ product }: { product: ProductDetail }) {
 }
 
 function ReviewSection({ productId }: { productId: number }) {
-  const { data: reviews, isLoading } = useQuery({
+  const {
+    data: reviews,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
     queryKey: ["reviews", productId],
     queryFn: () => fetchReviewsByProductId(productId),
   });
@@ -57,7 +63,7 @@ function ReviewSection({ productId }: { productId: number }) {
   return (
     <section className="mt-8 rounded-[24px] border border-[#e4ebf3] bg-white p-6 shadow-[0_14px_35px_rgba(15,23,42,0.05)]">
       <h2 className="mb-4 font-black text-[#111827]">
-        상품 리뷰{reviews ? ` (${reviews.length})` : ""}
+        상품 리뷰{reviews && !isError ? ` (${reviews.length})` : ""}
       </h2>
 
       {isLoading && (
@@ -68,11 +74,24 @@ function ReviewSection({ productId }: { productId: number }) {
         </div>
       )}
 
-      {!isLoading && reviews && reviews.length === 0 && (
+      {isError && (
+        <div className="rounded-2xl bg-[#f7f9fc] px-4 py-5 text-center text-sm text-[#64748b]">
+          <p>리뷰를 불러오지 못했습니다.</p>
+          <button
+            type="button"
+            onClick={() => void refetch()}
+            className="mt-3 rounded-lg border border-[#346aff] px-3 py-2 text-xs font-bold text-[#346aff] transition hover:bg-[#eef4ff] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2"
+          >
+            다시 시도
+          </button>
+        </div>
+      )}
+
+      {!isLoading && !isError && reviews && reviews.length === 0 && (
         <p className="text-sm text-[#64748b]">아직 등록된 리뷰가 없습니다.</p>
       )}
 
-      {!isLoading && reviews && reviews.length > 0 && (
+      {!isLoading && !isError && reviews && reviews.length > 0 && (
         <div className="flex flex-col divide-y divide-[#edf2f7]">
           {reviews.map((review) => (
             <div key={review.id} className="py-4 first:pt-0 last:pb-0">
@@ -81,7 +100,11 @@ function ReviewSection({ productId }: { productId: number }) {
                   {review.author}
                 </span>
                 <span className="text-xs text-[#94a3b8]">
-                  {new Date(review.createdAt).toLocaleDateString("ko-KR")}
+                  {formatDate(review.createdAt, {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                  })}
                 </span>
               </div>
               <div

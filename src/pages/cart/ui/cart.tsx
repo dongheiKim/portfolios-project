@@ -4,18 +4,23 @@ import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { fetchProductById } from "@/entities/product";
 import { useCartStore } from "@/features/cart/add-to-cart";
 import { formatPrice } from "@/shared/lib/format";
-import { Button } from "@/shared/ui/Button";
 import { OptimizedImage } from "@/shared/ui/OptimizedImage";
 import { SectionSkeleton } from "@/shared/ui/Skeleton";
 
 export function CartPage() {
   const items = useCartStore((s) => s.items);
+  const hasHydrated = useCartStore((s) => s.hasHydrated);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
 
   const productIds = items.map((item) => item.productId);
 
-  const { data: products, isLoading } = useQuery({
+  const {
+    data: products,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
     queryKey: ["cart-products", productIds],
     queryFn: () => Promise.all(productIds.map((id) => fetchProductById(id))),
     enabled: productIds.length > 0,
@@ -41,7 +46,9 @@ export function CartPage() {
       >
         <h1 className="mb-5 text-2xl font-black text-[#111827]">장바구니</h1>
 
-        {items.length === 0 && (
+        {!hasHydrated && <SectionSkeleton lines={3} />}
+
+        {hasHydrated && items.length === 0 && (
           <div className="rounded-[28px] border border-[#e4ebf3] bg-white py-20 text-center text-[#64748b] shadow-[0_18px_45px_rgba(15,23,42,0.05)]">
             <ShoppingCart
               className="mx-auto mb-3 text-[#c9d3e1]"
@@ -58,14 +65,29 @@ export function CartPage() {
           </div>
         )}
 
-        {items.length > 0 && isLoading && (
+        {hasHydrated && items.length > 0 && isLoading && (
           <div className="flex flex-col gap-4">
             <SectionSkeleton lines={3} />
             <SectionSkeleton lines={3} />
           </div>
         )}
 
-        {items.length > 0 && !isLoading && (
+        {hasHydrated && items.length > 0 && isError && (
+          <div className="rounded-[28px] border border-[#e4ebf3] bg-white py-20 text-center text-[#64748b] shadow-[0_18px_45px_rgba(15,23,42,0.05)]">
+            <p className="text-lg font-medium">
+              장바구니 상품을 불러오지 못했습니다.
+            </p>
+            <button
+              type="button"
+              onClick={() => void refetch()}
+              className="mt-4 rounded-xl bg-[#346aff] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#2858d8] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2"
+            >
+              다시 시도
+            </button>
+          </div>
+        )}
+
+        {hasHydrated && items.length > 0 && !isLoading && !isError && (
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1.4fr)_minmax(260px,0.8fr)]">
             <div className="flex flex-col divide-y divide-[#edf2f7] rounded-[24px] border border-[#e4ebf3] bg-white px-5">
               {cartRows.map((row) => (
@@ -94,8 +116,9 @@ export function CartPage() {
                       onClick={() =>
                         updateQuantity(row.productId, row.quantity - 1)
                       }
-                      aria-label="수량 감소"
-                      className="flex h-8 w-8 items-center justify-center rounded-full border border-[#e4ebf3] text-[#516074] hover:bg-[#f4f7fb]"
+                      aria-label={`${row.product.name} 수량 감소`}
+                      disabled={row.quantity <= 1}
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-[#e4ebf3] text-[#516074] hover:bg-[#f4f7fb] disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       <Minus size={14} />
                     </button>
@@ -107,8 +130,9 @@ export function CartPage() {
                       onClick={() =>
                         updateQuantity(row.productId, row.quantity + 1)
                       }
-                      aria-label="수량 증가"
-                      className="flex h-8 w-8 items-center justify-center rounded-full border border-[#e4ebf3] text-[#516074] hover:bg-[#f4f7fb]"
+                      aria-label={`${row.product.name} 수량 증가`}
+                      disabled={row.quantity >= 99}
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-[#e4ebf3] text-[#516074] hover:bg-[#f4f7fb] disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       <Plus size={14} />
                     </button>
@@ -140,10 +164,11 @@ export function CartPage() {
                   <span>총 결제 금액</span>
                   <span>{formatPrice(totalPrice)}</span>
                 </div>
-                <Link to="/checkout" className="mt-5 block">
-                  <Button type="button" fullWidth>
-                    주문하기
-                  </Button>
+                <Link
+                  to="/checkout"
+                  className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#346aff] px-4 py-2 text-base font-semibold text-white shadow-[0_10px_20px_rgba(52,106,255,0.22)] transition-all hover:bg-[#1d55ef] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2"
+                >
+                  주문하기
                 </Link>
               </div>
             </aside>

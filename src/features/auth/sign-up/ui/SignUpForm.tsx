@@ -1,5 +1,5 @@
 import type { FormEvent } from "react";
-import { useNavigate, Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { signUp } from "../api/signUp";
 import { useSignUpForm } from "../model/useSignUpForm";
 import { useAuthStore } from "@/features/auth/model/authStore";
@@ -23,6 +23,14 @@ export function SignUpForm() {
   } = useSignUpForm();
   const login = useAuthStore((s) => s.login);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const redirectPath =
+    typeof location.state?.from === "string" &&
+    location.state.from.startsWith("/") &&
+    !location.state.from.startsWith("//")
+      ? location.state.from
+      : "/";
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,7 +39,7 @@ export function SignUpForm() {
     try {
       const { token, user } = await signUp({ name, email, password });
       login(user, token);
-      navigate("/");
+      navigate(redirectPath, { replace: true });
     } catch {
       setErrors({
         general: "회원가입 중 오류가 발생했습니다. 다시 시도해 주세요.",
@@ -126,6 +134,7 @@ export function SignUpForm() {
         <span>가입 즉시 주문 조회와 장바구니 저장 사용 가능</span>
         <Link
           to="/login"
+          state={{ from: location.state?.from }}
           className="font-semibold text-[#346aff] hover:underline"
         >
           로그인

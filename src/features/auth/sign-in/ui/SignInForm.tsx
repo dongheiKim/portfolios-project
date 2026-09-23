@@ -1,5 +1,5 @@
 import type { FormEvent } from "react";
-import { useNavigate, Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { signIn } from "../api/signIn";
 import { useSignInForm } from "../model/useSignInForm";
 import { useAuthStore } from "@/features/auth/model/authStore";
@@ -19,6 +19,14 @@ export function SignInForm() {
   } = useSignInForm();
   const login = useAuthStore((s) => s.login);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const redirectPath =
+    typeof location.state?.from === "string" &&
+    location.state.from.startsWith("/") &&
+    !location.state.from.startsWith("//")
+      ? location.state.from
+      : "/";
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,7 +35,7 @@ export function SignInForm() {
     try {
       const { token, user } = await signIn({ email, password });
       login(user, token);
-      navigate("/");
+      navigate(redirectPath, { replace: true });
     } catch {
       setErrors({ general: "이메일 또는 비밀번호가 올바르지 않습니다." });
     } finally {
@@ -103,6 +111,7 @@ export function SignInForm() {
         <span>와우회원 혜택과 주문 조회를 이어서 이용</span>
         <Link
           to="/signup"
+          state={{ from: location.state?.from }}
           className="font-semibold text-[#346aff] hover:underline"
         >
           회원가입

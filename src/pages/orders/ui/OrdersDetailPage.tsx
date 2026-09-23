@@ -2,43 +2,28 @@ import { Link, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, MapPin, Package } from "lucide-react";
 import { fetchOrderById } from "@/entities/order";
-import { formatPrice } from "@/shared/lib/format";
+import { useAuthStore } from "@/features/auth/model/authStore";
+import {
+  getOrderStatusColor,
+  getOrderStatusLabel,
+} from "@/shared/lib/orderStatus";
+import { formatDate, formatPrice } from "@/shared/lib/format";
+import { OptimizedImage } from "@/shared/ui/OptimizedImage";
 import { HeroSkeleton, SectionSkeleton } from "@/shared/ui/Skeleton";
-import type { OrderStatus } from "@/entities/order";
-
-const statusLabel: Record<OrderStatus, string> = {
-  pending: "결제 대기",
-  paid: "결제 완료",
-  preparing: "상품 준비 중",
-  shipping: "배송 중",
-  delivered: "배송 완료",
-  cancelled: "취소됨",
-  refunded: "환불 완료",
-  completed: "완료됨",
-};
-
-const statusColor: Record<OrderStatus, string> = {
-  pending: "text-yellow-600",
-  paid: "text-blue-600",
-  preparing: "text-indigo-600",
-  shipping: "text-[#1a93e5]",
-  delivered: "text-green-600",
-  cancelled: "text-gray-500",
-  refunded: "text-red-500",
-  completed: "text-green-600",
-};
 
 export function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
   const orderId = (id ?? "").trim();
   const invalidOrderId = !/^[1-9]\d*$/.test(orderId);
+  const userId = useAuthStore((state) => state.user?.id);
 
   const {
     data: order,
     isLoading,
     isError,
+    refetch,
   } = useQuery({
-    queryKey: ["order", orderId],
+    queryKey: ["order", userId, orderId],
     queryFn: () => fetchOrderById(orderId),
     enabled: !invalidOrderId,
   });
@@ -68,6 +53,13 @@ export function OrderDetailPage() {
         {!invalidOrderId && isError && (
           <div className="rounded-[28px] border border-[#e4ebf3] bg-white py-20 text-center text-[#64748b] shadow-[0_18px_45px_rgba(15,23,42,0.05)]">
             <p className="text-lg font-medium">주문을 찾을 수 없습니다.</p>
+            <button
+              type="button"
+              onClick={() => void refetch()}
+              className="mt-4 rounded-xl bg-[#346aff] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#2858d8] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2"
+            >
+              다시 시도
+            </button>
           </div>
         )}
 
@@ -96,7 +88,7 @@ export function OrderDetailPage() {
                     주문 #{order.id}
                   </h1>
                   <p className="mt-2 text-sm text-[#64748b]">
-                    {new Date(order.createdAt).toLocaleDateString("ko-KR", {
+                    {formatDate(order.createdAt, {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
@@ -107,9 +99,9 @@ export function OrderDetailPage() {
                 </div>
                 <div className="rounded-2xl bg-white px-4 py-3 shadow-[0_8px_20px_rgba(15,23,42,0.05)]">
                   <span
-                    className={`text-sm font-bold ${statusColor[order.status]}`}
+                    className={`text-sm font-bold ${getOrderStatusColor(order.status)}`}
                   >
-                    {statusLabel[order.status]}
+                    {getOrderStatusLabel(order.status)}
                   </span>
                 </div>
               </div>
@@ -123,35 +115,33 @@ export function OrderDetailPage() {
                     주문 상품
                   </h2>
                   <div className="flex flex-col divide-y divide-[#edf2f7]">
-                    {order.items.map(
-                      (item: (typeof order.items)[number], i: number) => (
-                        <div
-                          key={i}
-                          className="flex items-center gap-4 py-4 first:pt-0 last:pb-0"
-                        >
-                          <div className="h-18 w-18 overflow-hidden rounded-2xl bg-[#f7f9fc] flex-shrink-0">
-                            {item.productImage && (
-                              <img
-                                src={item.productImage}
-                                alt={item.productName}
-                                className="h-full w-full object-cover"
-                              />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-sm font-semibold text-[#111827]">
-                              {item.productName}
-                            </p>
-                            <p className="mt-1 text-xs text-[#64748b]">
-                              수량 {item.quantity}개
-                            </p>
-                          </div>
-                          <span className="text-base font-black text-[#111827]">
-                            {formatPrice(item.price * item.quantity)}
-                          </span>
+                    {order.items.map((item: (typeof order.items)[number]) => (
+                      <div
+                        key={item.productId}
+                        className="flex items-center gap-4 py-4 first:pt-0 last:pb-0"
+                      >
+                        <div className="h-18 w-18 overflow-hidden rounded-2xl bg-[#f7f9fc] flex-shrink-0">
+                          {item.productImage && (
+                            <OptimizedImage
+                              src={item.productImage}
+                              alt={item.productName}
+                              className="h-full w-full object-cover"
+                            />
+                          )}
                         </div>
-                      ),
-                    )}
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-[#111827]">
+                            {item.productName}
+                          </p>
+                          <p className="mt-1 text-xs text-[#64748b]">
+                            수량 {item.quantity}개
+                          </p>
+                        </div>
+                        <span className="text-base font-black text-[#111827]">
+                          {formatPrice(item.price * item.quantity)}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
 

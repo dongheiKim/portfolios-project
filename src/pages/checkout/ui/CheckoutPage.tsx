@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, CreditCard, MapPin } from "lucide-react";
 import {
   createOrder,
@@ -10,6 +10,7 @@ import {
 import { fetchProductById } from "@/entities/product";
 import { useAuthStore } from "@/features/auth/model/authStore";
 import { useCartStore } from "@/features/cart/add-to-cart";
+import { createInitialShippingAddress } from "@/pages/checkout/model/checkoutAddress";
 import { formatPrice } from "@/shared/lib/format";
 import { Button } from "@/shared/ui/Button";
 import { OptimizedImage } from "@/shared/ui/OptimizedImage";
@@ -25,31 +26,25 @@ const paymentOptions: { value: PaymentMethod; label: string }[] = [
 
 export function CheckoutPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
   const items = useCartStore((s) => s.items);
+  const hasCartHydrated = useCartStore((s) => s.hasHydrated);
   const clearCart = useCartStore((s) => s.clearCart);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [shippingAddress, setShippingAddress] = useState<ShippingAddress>(
-    () => {
-      const savedAddress =
-        user?.addresses.find((candidate) => candidate.isDefault) ??
-        user?.addresses[0];
-      return {
-        recipient: savedAddress?.recipient ?? user?.name ?? "",
-        phone: savedAddress?.phone ?? user?.phone ?? "",
-        address: savedAddress?.address ?? "",
-        city: savedAddress?.address ?? "",
-        street: savedAddress?.addressDetail ?? "",
-        zipcode: savedAddress?.zipCode ?? "",
-        addressDetail: savedAddress?.addressDetail ?? "",
-      };
-    },
+  const [shippingAddress, setShippingAddress] = useState<ShippingAddress>(() =>
+    createInitialShippingAddress(user),
   );
 
   const productIds = items.map((item) => item.productId);
-  const { data: products, isLoading } = useQuery({
+  const {
+    data: products,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
     queryKey: ["checkout-products", productIds],
     queryFn: () => Promise.all(productIds.map((id) => fetchProductById(id))),
     enabled: productIds.length > 0,
@@ -93,6 +88,12 @@ export function CheckoutPage() {
         shippingAddress,
         paymentMethod,
       });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["orders"] }),
+        queryClient.invalidateQueries({
+          queryKey: ["header-orders-preview"],
+        }),
+      ]);
       clearCart();
       navigate(`/orders/${order.id}`);
     } catch {
@@ -117,7 +118,9 @@ export function CheckoutPage() {
         </Link>
         <h1 className="mb-5 text-2xl font-black text-[#111827]">주문/결제</h1>
 
-        {items.length === 0 && (
+        {!hasCartHydrated && <SectionSkeleton lines={5} />}
+
+        {hasCartHydrated && items.length === 0 && (
           <div className="rounded-[28px] border border-[#e4ebf3] bg-white py-20 text-center text-[#64748b]">
             <p className="text-lg font-medium">주문할 상품이 없습니다.</p>
             <Link
@@ -129,9 +132,26 @@ export function CheckoutPage() {
           </div>
         )}
 
-        {items.length > 0 && isLoading && <SectionSkeleton lines={5} />}
+        {hasCartHydrated && items.length > 0 && isLoading && (
+          <SectionSkeleton lines={5} />
+        )}
 
-        {items.length > 0 && !isLoading && (
+        {hasCartHydrated && items.length > 0 && isError && (
+          <div className="rounded-[28px] border border-[#e4ebf3] bg-white py-20 text-center text-[#64748b] shadow-[0_18px_45px_rgba(15,23,42,0.05)]">
+            <p className="text-lg font-medium">
+              주문 상품을 불러오지 못했습니다.
+            </p>
+            <button
+              type="button"
+              onClick={() => void refetch()}
+              className="mt-4 rounded-xl bg-[#346aff] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#2858d8] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2"
+            >
+              다시 시도
+            </button>
+          </div>
+        )}
+
+        {hasCartHydrated && items.length > 0 && !isLoading && !isError && (
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.8fr)]">
             <div className="flex flex-col gap-5">
               <section className="rounded-[24px] border border-[#e4ebf3] bg-white p-5 shadow-[0_14px_35px_rgba(15,23,42,0.05)]">

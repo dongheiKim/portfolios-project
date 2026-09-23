@@ -13,9 +13,21 @@ const url = (path: string) => `${BASE_URL}${path}`;
 
 let nextUserId = mockUsers.length + 1;
 let nextOrderId = 1004;
+const orderOwners = new Map(mockOrders.map((order) => [order.id, 1]));
 
 function issueToken(userId: number) {
   return `mock-token-${userId}-${Date.now()}`;
+}
+
+function getAuthenticatedUserId(request: Request) {
+  const token = request.headers.get("authorization")?.replace("Bearer ", "");
+  const match = token?.match(/^mock-token-(\d+)-\d+$/);
+  const userId = match ? Number(match[1]) : NaN;
+
+  return Number.isInteger(userId) &&
+    mockUsers.some((user) => user.id === userId)
+    ? userId
+    : null;
 }
 
 export const handlers = [
@@ -60,11 +72,29 @@ export const handlers = [
     return HttpResponse.json({ token: issueToken(newUser.id), user });
   }),
 
-  http.get(url("/orders"), () => {
-    return HttpResponse.json(mockOrders);
+  http.get(url("/orders"), ({ request }) => {
+    const userId = getAuthenticatedUserId(request);
+    if (userId === null) {
+      return HttpResponse.json(
+        { message: "인증이 필요합니다." },
+        { status: 401 },
+      );
+    }
+
+    return HttpResponse.json(
+      mockOrders.filter((order) => orderOwners.get(order.id) === userId),
+    );
   }),
 
   http.post(url("/orders"), async ({ request }) => {
+    const userId = getAuthenticatedUserId(request);
+    if (userId === null) {
+      return HttpResponse.json(
+        { message: "인증이 필요합니다." },
+        { status: 401 },
+      );
+    }
+
     const payload = (await request.json()) as CreateOrderPayload;
 
     if (!payload.items?.length || !payload.shippingAddress) {
@@ -92,13 +122,22 @@ export const handlers = [
     };
 
     mockOrders.unshift(order);
+    orderOwners.set(order.id, userId);
     return HttpResponse.json(order, { status: 201 });
   }),
 
-  http.get(url("/orders/:id"), ({ params }) => {
+  http.get(url("/orders/:id"), ({ params, request }) => {
+    const userId = getAuthenticatedUserId(request);
     const order = mockOrders.find((item) => item.id === params.id);
 
-    if (!order) {
+    if (userId === null) {
+      return HttpResponse.json(
+        { message: "인증이 필요합니다." },
+        { status: 401 },
+      );
+    }
+
+    if (!order || orderOwners.get(order.id) !== userId) {
       return HttpResponse.json(
         { message: "주문을 찾을 수 없습니다." },
         { status: 404 },

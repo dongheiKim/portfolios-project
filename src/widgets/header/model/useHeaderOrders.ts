@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchOrders } from "@/entities/order";
 import { useAuthStore } from "@/features/auth/model/authStore";
-import { ORDER_STATUS_LABEL } from "../lib/header.constants";
+import { getOrderStatusLabel } from "@/shared/lib/orderStatus";
 import type { Order } from "@/entities/order";
 
 /**
@@ -23,15 +23,12 @@ export function useHeaderOrders() {
 
   const orderCount = ordersData?.length ?? 0;
   const latestOrder: Order | null = ordersData?.[0] ?? null;
-  const latestOrderStatusLabel = latestOrder
-    ? (ORDER_STATUS_LABEL[latestOrder.status] ?? "주문 확인")
-    : "주문 확인";
+  const latestOrderStatusLabel = getOrderStatusLabel(latestOrder?.status);
 
   return {
     orderCount,
     latestOrder,
     latestOrderStatusLabel,
-    isAuthenticated: Boolean(token),
   };
 }
 

@@ -2,40 +2,33 @@ import { Link } from "react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight, Package } from "lucide-react";
-import { fetchOrders, OrderStatus } from "@/entities/order";
-import { formatPrice } from "@/shared/lib/format";
+import { fetchOrders, type OrderStatus } from "@/entities/order";
+import { useAuthStore } from "@/features/auth/model/authStore";
+import {
+  getOrderStatusLabel,
+  ORDER_STATUS_VALUES,
+} from "@/shared/lib/orderStatus";
+import { formatDate, formatPrice } from "@/shared/lib/format";
 import { SectionSkeleton } from "@/shared/ui/Skeleton";
-
-const statusLabel: Record<OrderStatus, string> = {
-  pending: "결제 대기",
-  paid: "결제 완료",
-  preparing: "상품 준비 중",
-  shipping: "배송 중",
-  delivered: "배송 완료",
-  cancelled: "취소됨",
-  refunded: "환불 완료",
-  completed: "완료됨",
-};
 
 const statusOptions: { value: OrderStatus | "all"; label: string }[] = [
   { value: "all", label: "전체 주문" },
-  { value: OrderStatus.Pending, label: "결제 대기" },
-  { value: OrderStatus.Paid, label: "결제 완료" },
-  { value: OrderStatus.Preparing, label: "상품 준비 중" },
-  { value: OrderStatus.Shipping, label: "배송 중" },
-  { value: OrderStatus.Delivered, label: "배송 완료" },
-  { value: OrderStatus.Completed, label: "완료됨" },
-  { value: OrderStatus.Cancelled, label: "취소됨" },
+  ...ORDER_STATUS_VALUES.map((value) => ({
+    value,
+    label: getOrderStatusLabel(value),
+  })),
 ];
 
 export function OrdersPage() {
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "all">("all");
+  const userId = useAuthStore((state) => state.user?.id);
   const {
     data: orders,
     isLoading,
     isError,
+    refetch,
   } = useQuery({
-    queryKey: ["orders"],
+    queryKey: ["orders", userId],
     queryFn: fetchOrders,
   });
   const filteredOrders = useMemo(
@@ -66,6 +59,13 @@ export function OrdersPage() {
             <p className="text-lg font-medium">
               주문 목록을 불러오지 못했습니다.
             </p>
+            <button
+              type="button"
+              onClick={() => void refetch()}
+              className="mt-4 rounded-xl bg-[#346aff] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#2858d8] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2"
+            >
+              다시 시도
+            </button>
           </div>
         )}
 
@@ -120,13 +120,13 @@ export function OrdersPage() {
               >
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#346aff]">
-                    {statusLabel[order.status]}
+                    {getOrderStatusLabel(order.status)}
                   </p>
                   <p className="mt-1 text-base font-black text-[#111827]">
                     주문 #{order.id}
                   </p>
                   <p className="mt-1 text-sm text-[#64748b]">
-                    {new Date(order.createdAt).toLocaleDateString("ko-KR", {
+                    {formatDate(order.createdAt, {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
