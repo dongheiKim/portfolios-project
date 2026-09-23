@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { OptimizedImage } from "./OptimizedImage";
 import type { AdItem } from "../model/ad";
 
@@ -36,9 +37,9 @@ export function AdCard({ item }: AdCardProps) {
 
   if (item.href) {
     return (
-      <a href={item.href} className={className} aria-label={item.title}>
+      <Link to={item.href} className={className} aria-label={item.title}>
         {content}
-      </a>
+      </Link>
     );
   }
 

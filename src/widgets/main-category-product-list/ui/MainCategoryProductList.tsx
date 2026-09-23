@@ -53,7 +53,10 @@ export function MainCategoryProductList() {
   );
 
   return (
-    <section className={MAIN_CATEGORY_PRODUCT_LIST_SECTION_CLASS}>
+    <section
+      id="category-list"
+      className={MAIN_CATEGORY_PRODUCT_LIST_SECTION_CLASS}
+    >
       <div className={MAIN_CATEGORY_PRODUCT_LIST_GRID_CLASS}>
         <CategorySidebarNav
           localNavTop={localNavTop}

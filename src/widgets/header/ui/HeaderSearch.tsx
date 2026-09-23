@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Search, ChevronDown } from "lucide-react";
 import { useFilterStore } from "@/features/product/filter-products";
 
@@ -9,14 +9,22 @@ import { useFilterStore } from "@/features/product/filter-products";
  * - 카테고리 필터 선택 옵션
  */
 export function HeaderSearch() {
-  const [searchInput, setSearchInput] = useState("");
+  const location = useLocation();
+  const [searchInput, setSearchInput] = useState(() => {
+    if (location.pathname !== "/search") return "";
+    return new URLSearchParams(location.search).get("keyword") ?? "";
+  });
+  const resetFilters = useFilterStore((s) => s.resetFilters);
   const setKeyword = useFilterStore((s) => s.setKeyword);
   const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setKeyword(searchInput);
-    navigate("/search");
+    resetFilters();
+    setKeyword(searchInput.trim());
+    const query = new URLSearchParams();
+    if (searchInput.trim()) query.set("keyword", searchInput.trim());
+    navigate(`/search${query.toString() ? `?${query}` : ""}`);
   };
 
   return (

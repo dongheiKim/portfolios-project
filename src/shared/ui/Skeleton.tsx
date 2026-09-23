@@ -2,8 +2,6 @@ import { clsx } from "clsx";
 
 interface SkeletonProps {
   className?: string;
-  width?: string | number;
-  height?: string | number;
   rounded?: boolean;
 }
 

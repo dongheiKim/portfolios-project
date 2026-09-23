@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router";
 import { OptimizedImage } from "@/shared/ui/OptimizedImage";
 import { MAIN_CAROUSEL_SLIDES } from "../model/mainCarouselSlides";
 
@@ -15,14 +16,15 @@ export function MainCarousel({
 }: MainCarouselProps) {
   const slides = MAIN_CAROUSEL_SLIDES;
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    if (!autoplay || slides.length <= 1) return;
+    if (!autoplay || isPaused || slides.length <= 1) return;
     const timer = window.setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % slides.length);
     }, interval);
     return () => window.clearInterval(timer);
-  }, [autoplay, interval, slides.length]);
+  }, [autoplay, interval, isPaused, slides.length]);
 
   const handleSelect = useCallback((index: number) => {
     setActiveIndex(index);
@@ -33,9 +35,21 @@ export function MainCarousel({
 
   return (
     <section className="main-carousel mx-auto max-w-[1400px] px-3 pt-4 md:px-6">
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#0f172a] sm:aspect-[16/9] lg:aspect-[21/9]">
-        <a
-          href={activeSlide.href ?? "#"}
+      <div
+        className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#0f172a] sm:aspect-[16/9] lg:aspect-[21/9]"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onFocus={() => setIsPaused(true)}
+        onBlur={(event) => {
+          if (
+            !event.currentTarget.contains(event.relatedTarget as Node | null)
+          ) {
+            setIsPaused(false);
+          }
+        }}
+      >
+        <Link
+          to={activeSlide.href ?? "/search"}
           className="block h-full w-full"
           aria-label={activeSlide.title}
         >
@@ -45,7 +59,7 @@ export function MainCarousel({
             priority={activeIndex === 0}
             className="h-full w-full"
           />
-        </a>
+        </Link>
         <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-4 text-white sm:p-6">
           <p className="text-lg font-black sm:text-2xl">{activeSlide.title}</p>
           {activeSlide.subtitle && (
@@ -55,7 +69,11 @@ export function MainCarousel({
           )}
         </div>
 
-        <div className="absolute right-2 top-1/2 flex max-h-[80%] -translate-y-1/2 flex-col gap-2 overflow-y-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:right-4 sm:gap-3">
+        <div
+          role="group"
+          aria-label="메인 배너 선택"
+          className="absolute right-2 top-1/2 flex max-h-[80%] -translate-y-1/2 flex-col gap-2 overflow-y-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:right-4 sm:gap-3"
+        >
           {slides.map((slide, index) => {
             const isActive = index === activeIndex;
 

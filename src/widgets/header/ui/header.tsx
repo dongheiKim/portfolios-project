@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useCartStore } from "@/features/cart/add-to-cart";
 import { useAuthStore } from "@/features/auth/model/authStore";
 import { useRecentViewedProducts } from "@/shared/hooks/useRecentViewedProducts";
@@ -17,6 +16,17 @@ import { useHeaderOrders } from "../model/useHeaderOrders";
  */
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileMenuOpen(false);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mobileMenuOpen]);
 
   const cartCount = useCartStore((s) =>
     s.items.reduce((acc, i) => acc + i.quantity, 0),
@@ -40,21 +50,9 @@ export function Header() {
         cartCount={cartCount}
         latestViewedProduct={latestViewedProduct}
         latestOrder={latestOrder}
+        mobileMenuOpen={mobileMenuOpen}
         onMobileMenuToggle={() => setMobileMenuOpen((v) => !v)}
       />
-
-      {mobileMenuOpen && (
-        <div className="absolute right-4 top-4 md:hidden">
-          <button
-            type="button"
-            className="rounded-sm text-[#24364d] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2"
-            onClick={() => setMobileMenuOpen(false)}
-            aria-label="메뉴 닫기"
-          >
-            <X size={24} />
-          </button>
-        </div>
-      )}
 
       <HeaderQuickActions
         token={token}

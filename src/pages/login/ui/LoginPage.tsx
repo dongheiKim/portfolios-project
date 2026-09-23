@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { SignInForm } from "@/features/auth/sign-in";
 import {
   LOGIN_PAGE_COPY,
@@ -6,6 +6,8 @@ import {
 } from "../model/loginPage.constants";
 
 export function LoginPage() {
+  const location = useLocation();
+
   return (
     <main className={LOGIN_PAGE_STYLES.page}>
       <section className={LOGIN_PAGE_STYLES.wrapper}>
@@ -36,7 +38,11 @@ export function LoginPage() {
           <SignInForm />
           <p className={LOGIN_PAGE_STYLES.switchText}>
             {LOGIN_PAGE_COPY.switchDescription}{" "}
-            <Link to="/signup" className={LOGIN_PAGE_STYLES.switchLink}>
+            <Link
+              to="/signup"
+              state={{ from: location.state?.from }}
+              className={LOGIN_PAGE_STYLES.switchLink}
+            >
               {LOGIN_PAGE_COPY.switchAction}
             </Link>
           </p>

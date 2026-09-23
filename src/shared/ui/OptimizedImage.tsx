@@ -3,8 +3,6 @@ import { clsx } from "clsx";
 interface OptimizedImageProps {
   src: string;
   alt: string;
-  width?: number;
-  height?: number;
   className?: string;
   priority?: boolean;
   objectFit?: "cover" | "contain" | "fill";
@@ -13,8 +11,6 @@ interface OptimizedImageProps {
 export function OptimizedImage({
   src,
   alt,
-  width,
-  height,
   className,
   priority = false,
   objectFit = "cover",
@@ -23,8 +19,6 @@ export function OptimizedImage({
     <img
       src={src}
       alt={alt}
-      width={width}
-      height={height}
       loading={priority ? "eager" : "lazy"}
       decoding="async"
       fetchPriority={priority ? "high" : "low"}

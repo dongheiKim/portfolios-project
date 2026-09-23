@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router";
 import {
   ProductCard,
   searchProducts,
@@ -17,14 +18,20 @@ const SORT_OPTIONS: { value: ProductSortBy; label: string }[] = [
 ];
 
 export function SearchPage() {
-  const keyword = useFilterStore((s) => s.keyword);
+  const [searchParams] = useSearchParams();
+  const keyword = searchParams.get("keyword") ?? "";
   const category = useFilterStore((s) => s.category);
   const minPrice = useFilterStore((s) => s.minPrice);
   const maxPrice = useFilterStore((s) => s.maxPrice);
   const sortBy = useFilterStore((s) => s.sortBy);
   const setSortBy = useFilterStore((s) => s.setSortBy);
 
-  const { data: products, isLoading } = useQuery({
+  const {
+    data: products,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
     queryKey: [
       "search-products",
       keyword,
@@ -51,7 +58,7 @@ export function SearchPage() {
             <h1 className="mt-1 text-2xl font-black text-[#111827]">
               {keyword ? `"${keyword}" 검색 결과` : "전체 상품"}
             </h1>
-            {!isLoading && (
+            {!isLoading && !isError && (
               <p className="mt-1 text-sm text-[#64748b]">
                 총 {products?.length ?? 0}개의 상품
               </p>
@@ -83,13 +90,26 @@ export function SearchPage() {
           </div>
         )}
 
-        {!isLoading && products && products.length === 0 && (
+        {isError && (
+          <div className="rounded-[28px] border border-[#e4ebf3] bg-white py-20 text-center text-[#64748b] shadow-[0_18px_45px_rgba(15,23,42,0.05)]">
+            <p className="text-lg font-medium">상품을 불러오지 못했습니다.</p>
+            <button
+              type="button"
+              onClick={() => void refetch()}
+              className="mt-4 rounded-xl bg-[#346aff] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#2858d8] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2"
+            >
+              다시 시도
+            </button>
+          </div>
+        )}
+
+        {!isLoading && !isError && products && products.length === 0 && (
           <div className="rounded-[28px] border border-[#e4ebf3] bg-white py-20 text-center text-[#64748b] shadow-[0_18px_45px_rgba(15,23,42,0.05)]">
             <p className="text-lg font-medium">검색 결과가 없습니다.</p>
           </div>
         )}
 
-        {!isLoading && products && products.length > 0 && (
+        {!isLoading && !isError && products && products.length > 0 && (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {products.map((product) => (
               <ProductCard

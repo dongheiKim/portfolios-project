@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { ShoppingCart, PackageCheck } from "lucide-react";
 import { UserBadge } from "@/entities/user";
+import { OptimizedImage } from "@/shared/ui/OptimizedImage";
 import type { User } from "@/entities/user";
 import type { Order } from "@/entities/order";
 
@@ -33,7 +34,7 @@ export function HeaderNav({
           className="hidden xl:flex items-center gap-3 rounded-2xl border border-[#e5ebf5] bg-[#fbfcfe] px-3 py-2 text-[#334155] transition-colors hover:border-[#bfd1ff] hover:text-[#346aff]"
         >
           <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-white">
-            <img
+            <OptimizedImage
               src={latestViewedProduct.imageUrl}
               alt={latestViewedProduct.name}
               className="h-full w-full object-cover"

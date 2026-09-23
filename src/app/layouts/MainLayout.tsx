@@ -6,9 +6,9 @@ export function MainLayout() {
   return (
     <div className="app-container">
       <Header />
-      <main className="content">
+      <div className="content">
         <Outlet />
-      </main>
+      </div>
       <Footer />
     </div>
   );

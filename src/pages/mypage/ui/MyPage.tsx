@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
-import { Heart, MapPin, Package, Plus, Trash2, UserRound } from "lucide-react";
+import { Link, useNavigate } from "react-router";
+import {
+  Heart,
+  LogOut,
+  MapPin,
+  Package,
+  Plus,
+  Trash2,
+  UserRound,
+} from "lucide-react";
 import { fetchProductById, ProductCard } from "@/entities/product";
 import type { Address } from "@/entities/user/model/userTypes";
 import { useAuthStore } from "@/features/auth/model/authStore";
@@ -21,9 +29,12 @@ const emptyAddress = (): Address => ({
 });
 
 export function MyPage() {
+  const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
   const setUser = useAuthStore((state) => state.setUser);
   const wishlistIds = useWishlistStore((state) => state.productIds);
+  const wishlistHydrated = useWishlistStore((state) => state.hasHydrated);
   const cartCount = useCartStore((state) =>
     state.items.reduce((sum, item) => sum + item.quantity, 0),
   );
@@ -33,16 +44,20 @@ export function MyPage() {
   >([]);
 
   useEffect(() => {
+    if (!wishlistHydrated) return;
+
     let cancelled = false;
-    Promise.all(wishlistIds.map((id) => fetchProductById(id))).then(
-      (products) => {
+    Promise.all(wishlistIds.map((id) => fetchProductById(id)))
+      .then((products) => {
         if (!cancelled) setWishlistProducts(products);
-      },
-    );
+      })
+      .catch(() => {
+        if (!cancelled) setWishlistProducts([]);
+      });
     return () => {
       cancelled = true;
     };
-  });
+  }, [wishlistIds, wishlistHydrated]);
 
   if (!user) return null;
 
@@ -53,10 +68,11 @@ export function MyPage() {
   const saveAddress = () => {
     if (!draft?.recipient || !draft.phone || !draft.zipCode || !draft.address)
       return;
-    const nextAddresses = draft.isDefault
+    const shouldBeDefault = draft.isDefault || addresses.length === 0;
+    const nextAddresses = shouldBeDefault
       ? addresses
           .map((address) => ({ ...address, isDefault: false }))
-          .concat(draft)
+          .concat({ ...draft, isDefault: true })
       : [...addresses, draft];
     setUser({ ...user, addresses: nextAddresses });
     setDraft(null);
@@ -99,6 +115,17 @@ export function MyPage() {
           >
             주문 내역 보기
           </Link>
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            onClick={() => {
+              logout();
+              navigate("/login", { replace: true });
+            }}
+          >
+            <LogOut size={14} /> 로그아웃
+          </Button>
         </div>
 
         <section className="grid gap-4 sm:grid-cols-3">
@@ -251,7 +278,11 @@ export function MyPage() {
           <h2 className="flex items-center gap-2 font-black text-[#111827]">
             <Heart size={18} className="text-[#e11937]" /> 찜 목록
           </h2>
-          {wishlistProducts.length > 0 ? (
+          {!wishlistHydrated ? (
+            <p className="mt-4 text-sm text-[#64748b]">
+              찜 목록을 불러오는 중입니다.
+            </p>
+          ) : wishlistProducts.length > 0 ? (
             <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
               {wishlistProducts.map((product) => (
                 <ProductCard

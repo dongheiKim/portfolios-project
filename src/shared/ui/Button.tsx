@@ -44,6 +44,7 @@ export function Button({
     <button
       {...props}
       disabled={disabled || isLoading}
+      aria-busy={isLoading || undefined}
       className={clsx(
         "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all",
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2",

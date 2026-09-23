@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router";
 import { OptimizedImage } from "@/shared/ui/OptimizedImage";
 import { BANNER_SLIDES } from "../model/bannerSlides";
 
@@ -15,14 +16,15 @@ export function BannerCarousel({
 }: BannerCarouselProps) {
   const slides = BANNER_SLIDES;
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    if (!autoplay || slides.length <= 1) return;
+    if (!autoplay || isPaused || slides.length <= 1) return;
     const timer = window.setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % slides.length);
     }, interval);
     return () => window.clearInterval(timer);
-  }, [autoplay, interval, slides.length]);
+  }, [autoplay, interval, isPaused, slides.length]);
 
   const handleSelect = useCallback((index: number) => {
     setActiveIndex(index);
@@ -33,9 +35,21 @@ export function BannerCarousel({
 
   return (
     <section className="banner-carousel mx-auto max-w-[1400px] px-3 pt-6 md:px-6">
-      <div className="relative aspect-[3/1] w-full overflow-hidden rounded-2xl bg-[#0f172a] md:aspect-[21/5]">
-        <a
-          href={activeSlide.href ?? "#"}
+      <div
+        className="relative aspect-[3/1] w-full overflow-hidden rounded-2xl bg-[#0f172a] md:aspect-[21/5]"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onFocus={() => setIsPaused(true)}
+        onBlur={(event) => {
+          if (
+            !event.currentTarget.contains(event.relatedTarget as Node | null)
+          ) {
+            setIsPaused(false);
+          }
+        }}
+      >
+        <Link
+          to={activeSlide.href ?? "/search"}
           className="block h-full w-full"
           aria-label={activeSlide.title}
         >
@@ -44,9 +58,10 @@ export function BannerCarousel({
             alt={activeSlide.title}
             className="h-full w-full"
           />
-        </a>
+        </Link>
 
         <div
+          role="group"
           className="absolute inset-x-0 bottom-3 flex justify-center gap-2"
           aria-label="배너 선택"
         >

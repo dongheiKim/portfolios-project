@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { ShoppingCart, Eye } from "lucide-react";
 import { UserBadge } from "@/entities/user";
+import { OptimizedImage } from "@/shared/ui/OptimizedImage";
 import { QUICK_LINKS } from "../lib/header.constants";
 import type { User } from "@/entities/user";
 import type { Order } from "@/entities/order";
@@ -34,19 +35,20 @@ export function MobileMenu({
   if (!isOpen) return null;
 
   return (
-    <div className="border-t border-[#eef2f6] bg-white px-4 py-4 md:hidden">
+    <div
+      id="mobile-navigation"
+      className="border-t border-[#eef2f6] bg-white px-4 py-4 md:hidden"
+    >
       <div className="flex flex-col gap-3">
-        <UserBadge user={user} />
+        <UserBadge user={user} onClick={onClose} />
         <div className="grid grid-cols-2 gap-2 text-sm text-[#334155]">
           {QUICK_LINKS.map((link) => (
-            <button
+            <span
               key={link}
-              type="button"
-              className="justify-start rounded-lg border border-[#e5ebf5] px-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2"
-              onClick={onClose}
+              className="rounded-lg border border-[#e5ebf5] px-3 py-2"
             >
               {link}
-            </button>
+            </span>
           ))}
         </div>
         {latestViewedProduct && (
@@ -56,7 +58,7 @@ export function MobileMenu({
             onClick={onClose}
           >
             <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl bg-white">
-              <img
+              <OptimizedImage
                 src={latestViewedProduct.imageUrl}
                 alt={latestViewedProduct.name}
                 className="h-full w-full object-cover"

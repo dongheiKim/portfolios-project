@@ -9,7 +9,7 @@ export const SELLER_SPECIAL_DEALS: AdItem[] = Array.from(
       title: `판매자특가 상품 ${order}`,
       subtitle: "오늘만 특가",
       image: `https://picsum.photos/seed/seller-special-${order}/400/400`,
-      href: "/products",
+      href: "/search",
       badge: "특가",
     };
   },

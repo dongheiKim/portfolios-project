@@ -22,27 +22,33 @@ export function ProductCard({
       className="group flex h-full flex-col overflow-hidden rounded-[20px] border border-[#e7edf5] bg-white shadow-[0_10px_25px_rgba(15,23,42,0.04)] transition-all hover:-translate-y-1 hover:border-[#bfd1ff] hover:shadow-[0_18px_38px_rgba(52,106,255,0.16)]"
       aria-label={product.name}
     >
-      <Link
-        to={`/products/${product.id}`}
-        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-inset"
-        aria-label={`${product.name} 상세 보기`}
-      >
-        <div className="relative aspect-square overflow-hidden bg-[#f7f9fc]">
+      <div className="relative aspect-square overflow-hidden bg-[#f7f9fc]">
+        <Link
+          to={`/products/${product.id}`}
+          className="block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-inset"
+          aria-label={`${product.name} 상세 보기`}
+        >
           <OptimizedImage
             src={product.imageUrl}
             alt={product.name}
             className="h-full w-full"
           />
-          {product.discountRate != null && product.discountRate > 0 && (
-            <span className="absolute left-3 top-3">
-              <Badge variant="discount" value={product.discountRate} />
-            </span>
-          )}
-          {wishlistSlot != null && (
-            <span className="absolute right-3 top-3">{wishlistSlot}</span>
-          )}
-        </div>
+        </Link>
+        {product.discountRate != null && product.discountRate > 0 && (
+          <span className="pointer-events-none absolute left-3 top-3">
+            <Badge variant="discount" value={product.discountRate} />
+          </span>
+        )}
+        {wishlistSlot != null && (
+          <span className="absolute right-3 top-3">{wishlistSlot}</span>
+        )}
+      </div>
 
+      <Link
+        to={`/products/${product.id}`}
+        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-inset"
+        aria-label={`${product.name} 상세 보기`}
+      >
         <div className="flex flex-col gap-2 p-4">
           <div className="flex items-center justify-between gap-2">
             {product.isRocketDelivery ? (

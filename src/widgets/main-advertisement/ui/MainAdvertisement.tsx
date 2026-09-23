@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { OptimizedImage } from "@/shared/ui/OptimizedImage";
 import { MAIN_ADVERTISEMENT_CARDS } from "../model/mainAdvertisementCards";
 
@@ -22,13 +23,13 @@ export function MainAdvertisement() {
           );
 
           return card.href ? (
-            <a
+            <Link
               key={card.id}
-              href={card.href}
+              to={card.href}
               className="group block rounded-xl border border-[#e7edf5] bg-white p-2 transition hover:-translate-y-0.5 hover:border-[#bfd1ff] hover:shadow-[0_10px_22px_rgba(15,23,42,0.08)] md:p-3"
             >
               {content}
-            </a>
+            </Link>
           ) : (
             <div
               key={card.id}

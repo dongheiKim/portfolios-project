@@ -23,13 +23,9 @@ export function HeaderQuickActions({
     <div className="mt-3 hidden items-center justify-between gap-4 border-t border-[#eef2f6] pt-3 md:flex">
       <div className="flex items-center gap-5 overflow-x-auto text-sm font-medium text-[#2f3d52]">
         {QUICK_LINKS.map((link) => (
-          <button
-            key={link}
-            type="button"
-            className="whitespace-nowrap rounded-sm transition-colors hover:text-[#346aff] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#346aff] focus-visible:ring-offset-2"
-          >
+          <span key={link} className="whitespace-nowrap">
             {link}
-          </button>
+          </span>
         ))}
       </div>
       <div className="flex items-center gap-2">
