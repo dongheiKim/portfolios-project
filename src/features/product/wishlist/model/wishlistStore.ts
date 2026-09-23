@@ -1,8 +1,11 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { createSafeJSONStorage } from "@/shared/lib/safeBrowserStorage";
 
 interface WishlistState {
   productIds: number[];
+  hasHydrated: boolean;
+  setHasHydrated: (hasHydrated: boolean) => void;
   toggleWishlist: (productId: number) => void;
 }
 
@@ -10,6 +13,8 @@ export const useWishlistStore = create<WishlistState>()(
   persist(
     (set) => ({
       productIds: [],
+      hasHydrated: false,
+      setHasHydrated: (hasHydrated) => set({ hasHydrated }),
       toggleWishlist: (productId) =>
         set((state) => ({
           productIds: state.productIds.includes(productId)
@@ -17,6 +22,13 @@ export const useWishlistStore = create<WishlistState>()(
             : [...state.productIds, productId],
         })),
     }),
-    { name: "wishlist-storage" },
+    {
+      name: "wishlist-storage",
+      partialize: (state) => ({ productIds: state.productIds }),
+      storage: createSafeJSONStorage(),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
+    },
   ),
 );

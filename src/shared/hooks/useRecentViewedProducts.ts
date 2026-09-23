@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 
+import {
+  readStoredJson,
+  writeStoredJson,
+} from "@/shared/lib/safeBrowserStorage";
+
 const STORAGE_KEY = "claude-recent-viewed-products";
 const EVENT_NAME = "claude-recent-viewed-updated";
 const MAX_ITEMS = 5;
@@ -12,16 +17,8 @@ export interface RecentViewedProduct {
 }
 
 function readRecentViewedProducts(): RecentViewedProduct[] {
-  if (typeof window === "undefined") return [];
-
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as RecentViewedProduct[];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
+  const parsed = readStoredJson<RecentViewedProduct[]>(STORAGE_KEY);
+  return Array.isArray(parsed) ? parsed : [];
 }
 
 export function pushRecentViewedProduct(product: RecentViewedProduct) {
@@ -32,14 +29,17 @@ export function pushRecentViewedProduct(product: RecentViewedProduct) {
     ...readRecentViewedProducts().filter((item) => item.id !== product.id),
   ].slice(0, MAX_ITEMS);
 
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-  window.dispatchEvent(new CustomEvent(EVENT_NAME));
+  if (writeStoredJson(STORAGE_KEY, next)) {
+    window.dispatchEvent(new CustomEvent(EVENT_NAME));
+  }
 }
 
 export function useRecentViewedProducts() {
   const [products, setProducts] = useState<RecentViewedProduct[]>([]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
     const sync = () => setProducts(readRecentViewedProducts());
 
     sync();

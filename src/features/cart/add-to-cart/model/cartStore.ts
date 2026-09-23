@@ -1,13 +1,8 @@
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
+import { createSafeJSONStorage } from "@/shared/lib/safeBrowserStorage";
 
 const MAX_QUANTITY = 99;
-
-const memoryStorage = {
-  getItem: () => null,
-  setItem: () => undefined,
-  removeItem: () => undefined,
-};
 
 interface CartItem {
   productId: number;
@@ -16,6 +11,8 @@ interface CartItem {
 
 interface CartState {
   items: CartItem[];
+  hasHydrated: boolean;
+  setHasHydrated: (hasHydrated: boolean) => void;
   addItem: (productId: number) => void;
   removeItem: (productId: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
@@ -26,6 +23,8 @@ export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       items: [],
+      hasHydrated: false,
+      setHasHydrated: (hasHydrated) => set({ hasHydrated }),
       addItem: (productId) =>
         set((state) => {
           const existing = state.items.find((i) => i.productId === productId);
@@ -60,9 +59,11 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: "cart-storage",
-      storage: createJSONStorage(() =>
-        typeof localStorage === "undefined" ? memoryStorage : localStorage,
-      ),
+      partialize: (state) => ({ items: state.items }),
+      storage: createSafeJSONStorage(),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     },
   ),
 );

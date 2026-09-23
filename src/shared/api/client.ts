@@ -1,18 +1,15 @@
 import { AUTH_STORAGE_KEY } from "@/features/auth/model/authStore";
+import { readStoredJson } from "@/shared/lib/safeBrowserStorage";
 
 const BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
 
 // zustand persist 포맷: { state: { token, user }, version }
 function getStoredToken(): string | null {
-  try {
-    const raw = localStorage.getItem(AUTH_STORAGE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as { state?: { token?: unknown } };
-    const token = parsed?.state?.token;
-    return typeof token === "string" ? token : null;
-  } catch {
-    return null;
-  }
+  const parsed = readStoredJson<{ state?: { token?: unknown } }>(
+    AUTH_STORAGE_KEY,
+  );
+  const token = parsed?.state?.token;
+  return typeof token === "string" ? token : null;
 }
 
 function buildApiErrorMessage(
