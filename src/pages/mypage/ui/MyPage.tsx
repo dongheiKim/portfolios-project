@@ -11,22 +11,17 @@ import {
 } from "lucide-react";
 import { fetchProductById, ProductCard } from "@/entities/product";
 import type { Address } from "@/entities/user/model/userTypes";
+import {
+  createAddressDraft,
+  normalizeAddressDraft,
+} from "@/pages/mypage/model/addressForm";
 import { useAuthStore } from "@/features/auth/model/authStore";
+import { signOut } from "@/features/auth/sign-out/api/signOut";
+import { updateAddresses } from "@/features/auth/update-profile/api/updateAddresses";
 import { useCartStore } from "@/features/cart/add-to-cart";
 import { useWishlistStore } from "@/features/product/wishlist";
 import { Button } from "@/shared/ui/Button";
 import { WishlistButton } from "@/features/product/wishlist";
-
-const emptyAddress = (): Address => ({
-  id: Date.now(),
-  label: "새 배송지",
-  recipient: "",
-  phone: "",
-  zipCode: "",
-  address: "",
-  addressDetail: "",
-  isDefault: false,
-});
 
 export function MyPage() {
   const navigate = useNavigate();
@@ -38,7 +33,12 @@ export function MyPage() {
   const cartCount = useCartStore((state) =>
     state.items.reduce((sum, item) => sum + item.quantity, 0),
   );
+  const clearCart = useCartStore((state) => state.clearCart);
+  const clearWishlist = useWishlistStore((state) => state.clearWishlist);
   const [draft, setDraft] = useState<Address | null>(null);
+  const [addressSaveError, setAddressSaveError] = useState("");
+  const [addressDraftError, setAddressDraftError] = useState("");
+  const [isSavingAddresses, setIsSavingAddresses] = useState(false);
   const [wishlistProducts, setWishlistProducts] = useState<
     Awaited<ReturnType<typeof fetchProductById>>[]
   >([]);
@@ -62,19 +62,43 @@ export function MyPage() {
   if (!user) return null;
 
   const addresses = user.addresses;
+  const persistAddresses = async (nextAddresses: Address[]) => {
+    setIsSavingAddresses(true);
+    try {
+      const updatedUser = await updateAddresses(nextAddresses);
+      setUser(updatedUser);
+      setAddressSaveError("");
+      return true;
+    } catch {
+      setAddressSaveError("배송지를 저장하지 못했습니다.");
+      return false;
+    } finally {
+      setIsSavingAddresses(false);
+    }
+  };
   const updateDraft = (field: keyof Address, value: string) => {
     setDraft((current) => (current ? { ...current, [field]: value } : current));
   };
-  const saveAddress = () => {
-    if (!draft?.recipient || !draft.phone || !draft.zipCode || !draft.address)
+  const saveAddress = async () => {
+    if (!draft) return;
+    const normalizedDraft = normalizeAddressDraft(draft);
+    if (!normalizedDraft) {
+      setAddressDraftError(
+        "배송지 이름, 받는 사람, 연락처, 우편번호, 주소를 입력해 주세요.",
+      );
       return;
-    const shouldBeDefault = draft.isDefault || addresses.length === 0;
+    }
+
+    const shouldBeDefault = normalizedDraft.isDefault || addresses.length === 0;
     const nextAddresses = shouldBeDefault
       ? addresses
           .map((address) => ({ ...address, isDefault: false }))
-          .concat({ ...draft, isDefault: true })
-      : [...addresses, draft];
-    setUser({ ...user, addresses: nextAddresses });
+          .concat({ ...normalizedDraft, isDefault: true })
+      : [...addresses, normalizedDraft];
+    const saved = await persistAddresses(nextAddresses);
+    if (!saved) return;
+
+    setAddressDraftError("");
     setDraft(null);
   };
   const removeAddress = (id: number) => {
@@ -85,16 +109,15 @@ export function MyPage() {
     ) {
       remaining[0] = { ...remaining[0], isDefault: true };
     }
-    setUser({ ...user, addresses: remaining });
+    void persistAddresses(remaining);
   };
   const setDefaultAddress = (id: number) => {
-    setUser({
-      ...user,
-      addresses: addresses.map((address) => ({
+    void persistAddresses(
+      addresses.map((address) => ({
         ...address,
         isDefault: address.id === id,
       })),
-    });
+    );
   };
 
   return (
@@ -119,8 +142,12 @@ export function MyPage() {
             type="button"
             size="sm"
             variant="ghost"
+            disabled={isSavingAddresses}
             onClick={() => {
+              void signOut().catch(() => undefined);
               logout();
+              clearCart();
+              clearWishlist();
               navigate("/login", { replace: true });
             }}
           >
@@ -164,11 +191,20 @@ export function MyPage() {
               type="button"
               size="sm"
               variant="outline"
-              onClick={() => setDraft(emptyAddress())}
+              disabled={isSavingAddresses}
+              onClick={() => {
+                setDraft(createAddressDraft(addresses));
+                setAddressDraftError("");
+              }}
             >
               <Plus size={14} /> 배송지 추가
             </Button>
           </div>
+          {addressSaveError && (
+            <p role="alert" className="mt-3 text-sm text-[#e11937]">
+              {addressSaveError}
+            </p>
+          )}
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {addresses.map((address) => (
               <div
@@ -197,6 +233,7 @@ export function MyPage() {
                     type="button"
                     aria-label={`${address.label} 배송지 삭제`}
                     onClick={() => removeAddress(address.id)}
+                    disabled={isSavingAddresses}
                     className="text-[#94a3b8] hover:text-[#e11937]"
                   >
                     <Trash2 size={16} />
@@ -206,6 +243,7 @@ export function MyPage() {
                   <button
                     type="button"
                     onClick={() => setDefaultAddress(address.id)}
+                    disabled={isSavingAddresses}
                     className="mt-3 text-xs font-semibold text-[#346aff] hover:underline"
                   >
                     기본 배송지로 설정
@@ -224,6 +262,11 @@ export function MyPage() {
         {draft && (
           <section className="mt-5 rounded-[24px] border border-[#bfd1ff] bg-white p-5">
             <h2 className="font-black text-[#111827]">배송지 추가</h2>
+            {addressDraftError && (
+              <p role="alert" className="mt-3 text-sm text-[#e11937]">
+                {addressDraftError}
+              </p>
+            )}
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {(
                 [
@@ -243,6 +286,7 @@ export function MyPage() {
                   <input
                     value={String(draft[field])}
                     onChange={(event) => updateDraft(field, event.target.value)}
+                    disabled={isSavingAddresses}
                     className="rounded-xl border border-[#e4ebf3] px-3 py-2 text-sm font-normal text-[#111827] outline-none focus:border-[#346aff] focus:ring-4 focus:ring-[#dbe8ff]"
                   />
                 </label>
@@ -251,6 +295,7 @@ export function MyPage() {
                 <input
                   type="checkbox"
                   checked={draft.isDefault}
+                  disabled={isSavingAddresses}
                   onChange={(event) =>
                     setDraft({ ...draft, isDefault: event.target.checked })
                   }
@@ -259,14 +304,23 @@ export function MyPage() {
               </label>
             </div>
             <div className="mt-4 flex gap-2">
-              <Button type="button" size="sm" onClick={saveAddress}>
+              <Button
+                type="button"
+                size="sm"
+                isLoading={isSavingAddresses}
+                onClick={saveAddress}
+              >
                 저장
               </Button>
               <Button
                 type="button"
                 size="sm"
                 variant="ghost"
-                onClick={() => setDraft(null)}
+                disabled={isSavingAddresses}
+                onClick={() => {
+                  setDraft(null);
+                  setAddressDraftError("");
+                }}
               >
                 취소
               </Button>

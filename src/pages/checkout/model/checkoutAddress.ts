@@ -12,8 +12,8 @@ export function createInitialShippingAddress(
     recipient: savedAddress?.recipient ?? user?.name ?? "",
     phone: savedAddress?.phone ?? user?.phone ?? "",
     address: savedAddress?.address ?? "",
-    city: savedAddress?.address ?? "",
-    street: savedAddress?.addressDetail ?? "",
+    city: "",
+    street: "",
     zipcode: savedAddress?.zipCode ?? "",
     addressDetail: savedAddress?.addressDetail ?? "",
   };

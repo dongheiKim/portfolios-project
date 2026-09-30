@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, MapPin, Package } from "lucide-react";
 import { fetchOrderById } from "@/entities/order";
+import { formatShippingAddress } from "@/entities/order/model/orderAddress";
 import { useAuthStore } from "@/features/auth/model/authStore";
 import {
   getOrderStatusColor,
@@ -155,18 +156,7 @@ export function OrderDetailPage() {
                       {order.shippingAddress.recipient}
                     </p>
                     <p>{order.shippingAddress.phone}</p>
-                    <p>
-                      ({order.shippingAddress.address}){" "}
-                      {order.shippingAddress.city}{" "}
-                      {order.shippingAddress.street}
-                    </p>
-                    {(order.shippingAddress.zipcode ||
-                      order.shippingAddress.addressDetail) && (
-                      <p>
-                        {order.shippingAddress.zipcode}{" "}
-                        {order.shippingAddress.addressDetail}
-                      </p>
-                    )}
+                    <p>{formatShippingAddress(order.shippingAddress)}</p>
                   </div>
                 </div>
               </section>

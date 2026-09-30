@@ -30,8 +30,8 @@ describe("createInitialShippingAddress", () => {
       zipcode: "12345",
       address: "서울시 강남구 테헤란로 1",
       addressDetail: "101호",
-      city: "서울시 강남구 테헤란로 1",
-      street: "101호",
+      city: "",
+      street: "",
     });
   });
 

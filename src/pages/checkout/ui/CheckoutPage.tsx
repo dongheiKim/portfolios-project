@@ -183,12 +183,6 @@ export function CheckoutPage() {
                           setShippingAddress((current) => ({
                             ...current,
                             [field]: event.target.value,
-                            ...(field === "address"
-                              ? { city: event.target.value }
-                              : {}),
-                            ...(field === "addressDetail"
-                              ? { street: event.target.value }
-                              : {}),
                           }))
                         }
                         className="rounded-xl border border-[#e4ebf3] px-3 py-2 text-sm font-normal text-[#111827] outline-none focus:border-[#346aff] focus:ring-4 focus:ring-[#dbe8ff]"
