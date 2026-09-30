@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { type ProductSummary } from "@/entities/product";
+import { MOCK_CATEGORY_SLOT_COUNT } from "@/entities/product/model/mockProductCategories";
 import { buildMockCategoryProducts } from "../lib/buildMockCategoryProducts";
 import {
   SIDEBAR_CATEGORY_ORDER,
@@ -7,7 +8,7 @@ import {
 } from "./sidebarCategories";
 
 const FEATURED_COUNT = 5;
-const GRID_COUNT = 8;
+const GRID_COUNT = MOCK_CATEGORY_SLOT_COUNT - FEATURED_COUNT;
 export const FEATURED_ROW = {
   key: "featured",
   title: "오늘의 추천",
@@ -18,7 +19,7 @@ export const GRID_ROW = {
   title: "함께 보면 좋은 상품",
   offset: FEATURED_COUNT,
 };
-const CATEGORY_PRODUCT_COUNT = FEATURED_COUNT + GRID_COUNT;
+const CATEGORY_PRODUCT_COUNT = MOCK_CATEGORY_SLOT_COUNT;
 
 function rotateSlice(
   products: ProductSummary[],

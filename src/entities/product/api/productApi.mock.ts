@@ -1,4 +1,10 @@
 import type { ProductDetail, ProductSummary } from "../model/productTypes";
+import {
+  MOCK_CATEGORY_SLOT_COUNT,
+  MOCK_PRODUCT_CATEGORY_LABELS,
+  MOCK_PRODUCT_CATEGORY_ORDER,
+  type MockProductCategoryId,
+} from "../model/mockProductCategories";
 
 interface MockProductSeed {
   id: number;
@@ -283,17 +289,65 @@ function buildProductSummary(seed: MockProductSeed): ProductSummary {
 export const mockProducts: ProductSummary[] =
   productSeeds.map(buildProductSummary);
 
+function getSyntheticProductIdParts(
+  id: number,
+): { category: MockProductCategoryId; slot: number } | null {
+  if (!Number.isSafeInteger(id) || id <= mockProducts.length) return null;
+
+  const category = MOCK_PRODUCT_CATEGORY_ORDER[Math.floor(id / 1000) - 1];
+  const slot = id % 1000;
+  if (!category || slot < 1 || slot > MOCK_CATEGORY_SLOT_COUNT) return null;
+
+  return { category, slot };
+}
+
+export function isKnownMockProductId(id: number): boolean {
+  if (!Number.isSafeInteger(id) || id <= 0) return false;
+  if (mockProducts.some((product) => product.id === id)) return true;
+
+  return getSyntheticProductIdParts(id) !== null;
+}
+
+function buildSyntheticProductDetail(
+  id: number,
+  category: MockProductCategoryId,
+  slot: number,
+): ProductDetail {
+  const source = mockProducts[(slot - 1) % mockProducts.length];
+  const offset = slot - 1;
+  const price = source.price + offset * 500;
+  const originalPrice =
+    (source.originalPrice ?? source.price + 1000) + offset * 600;
+  const discountRate = Math.round(
+    ((originalPrice - price) / originalPrice) * 100,
+  );
+  const imageUrl = `${source.imageUrl}?category=${category}&slot=${slot}`;
+
+  return {
+    ...source.productDetail,
+    id,
+    name: `${MOCK_PRODUCT_CATEGORY_LABELS[category]} 추천 ${slot}`,
+    price,
+    originalPrice,
+    discountRate,
+    category,
+    imageUrls: [imageUrl, ...source.productDetail.imageUrls.slice(1)],
+    reviews: source.reviewCount + offset * 9,
+  };
+}
+
 export function findMockProductDetailById(id: number): ProductDetail {
   const exact = mockProducts.find((item) => item.id === id);
   if (exact) return exact.productDetail;
 
-  // 홈 카테고리 위젯이 생성하는 합성 ID(실제 카탈로그 범위 밖의 숫자)는
-  // 대표 상품으로 대체 조회해 상세 페이지 진입이 끊기지 않도록 한다.
-  const isSyntheticId = Number.isInteger(id) && id > mockProducts.length;
-  if (!isSyntheticId || mockProducts.length === 0) {
+  const syntheticId = getSyntheticProductIdParts(id);
+  if (!syntheticId || mockProducts.length === 0) {
     throw new Error(`Product with id ${id} not found`);
   }
 
-  const fallback = mockProducts[id % mockProducts.length];
-  return { ...fallback.productDetail, id };
+  return buildSyntheticProductDetail(
+    id,
+    syntheticId.category,
+    syntheticId.slot,
+  );
 }
