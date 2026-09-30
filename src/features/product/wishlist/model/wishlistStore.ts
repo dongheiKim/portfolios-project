@@ -7,6 +7,7 @@ interface WishlistState {
   hasHydrated: boolean;
   setHasHydrated: (hasHydrated: boolean) => void;
   toggleWishlist: (productId: number) => void;
+  clearWishlist: () => void;
 }
 
 export const useWishlistStore = create<WishlistState>()(
@@ -21,6 +22,7 @@ export const useWishlistStore = create<WishlistState>()(
             ? state.productIds.filter((id) => id !== productId)
             : [...state.productIds, productId],
         })),
+      clearWishlist: () => set({ productIds: [] }),
     }),
     {
       name: "wishlist-storage",

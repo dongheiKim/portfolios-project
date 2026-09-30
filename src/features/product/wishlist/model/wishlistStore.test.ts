@@ -14,4 +14,13 @@ describe("useWishlistStore", () => {
     useWishlistStore.getState().toggleWishlist(1);
     expect(useWishlistStore.getState().productIds).toEqual([]);
   });
+
+  it("clears all wishlist items", () => {
+    useWishlistStore.getState().toggleWishlist(1);
+    useWishlistStore.getState().toggleWishlist(2);
+
+    useWishlistStore.getState().clearWishlist();
+
+    expect(useWishlistStore.getState().productIds).toEqual([]);
+  });
 });

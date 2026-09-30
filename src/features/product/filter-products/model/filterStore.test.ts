@@ -23,4 +23,15 @@ describe("useFilterStore", () => {
       sortBy: "newest",
     });
   });
+
+  it("stores category and price range selections", () => {
+    useFilterStore.getState().setCategory("electronics");
+    useFilterStore.getState().setPriceRange(10000, 50000);
+
+    expect(useFilterStore.getState()).toMatchObject({
+      category: "electronics",
+      minPrice: 10000,
+      maxPrice: 50000,
+    });
+  });
 });

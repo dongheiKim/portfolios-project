@@ -24,4 +24,23 @@ describe("useCartStore", () => {
     useCartStore.getState().removeItem(1);
     expect(useCartStore.getState().items).toEqual([]);
   });
+
+  it("keeps quantities within the supported range", () => {
+    useCartStore.getState().addItem(1);
+    useCartStore.getState().updateQuantity(1, 0);
+    expect(useCartStore.getState().items[0]?.quantity).toBe(1);
+
+    useCartStore.getState().updateQuantity(1, 99);
+    useCartStore.getState().addItem(1);
+    expect(useCartStore.getState().items[0]?.quantity).toBe(99);
+  });
+
+  it("clears all cart items", () => {
+    useCartStore.getState().addItem(1);
+    useCartStore.getState().addItem(2);
+
+    useCartStore.getState().clearCart();
+
+    expect(useCartStore.getState().items).toEqual([]);
+  });
 });
