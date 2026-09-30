@@ -1,4 +1,8 @@
 import { useState } from "react";
+import {
+  MAX_PASSWORD_LENGTH,
+  MIN_PASSWORD_LENGTH,
+} from "@/features/auth/model/passwordPolicy";
 
 interface FormErrors {
   name?: string;
@@ -26,8 +30,10 @@ export function useSignUpForm() {
     }
     if (!password) {
       newErrors.password = "비밀번호를 입력해 주세요.";
-    } else if (password.length < 8) {
-      newErrors.password = "비밀번호는 8자 이상이어야 합니다.";
+    } else if (password.length < MIN_PASSWORD_LENGTH) {
+      newErrors.password = `비밀번호는 ${MIN_PASSWORD_LENGTH}자 이상이어야 합니다.`;
+    } else if (password.length > MAX_PASSWORD_LENGTH) {
+      newErrors.password = `비밀번호는 ${MAX_PASSWORD_LENGTH}자 이하여야 합니다.`;
     }
     if (!passwordConfirm) {
       newErrors.passwordConfirm = "비밀번호 확인을 입력해 주세요.";

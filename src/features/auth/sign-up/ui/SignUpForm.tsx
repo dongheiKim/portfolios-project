@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import { signUp } from "../api/signUp";
 import { useSignUpForm } from "../model/useSignUpForm";
 import { useAuthStore } from "@/features/auth/model/authStore";
+import { MAX_PASSWORD_LENGTH } from "@/features/auth/model/passwordPolicy";
 import { Button } from "@/shared/ui/Button";
 
 export function SignUpForm() {
@@ -78,7 +79,7 @@ export function SignUpForm() {
       onChange: setPassword,
       error: errors.password,
       autoComplete: "new-password",
-      placeholder: "비밀번호 (8자 이상)",
+      placeholder: "비밀번호 (8~128자)",
     },
     {
       id: "passwordConfirm",
@@ -115,6 +116,11 @@ export function SignUpForm() {
             id={field.id}
             name={field.id}
             type={field.type}
+            maxLength={
+              field.id === "password" || field.id === "passwordConfirm"
+                ? MAX_PASSWORD_LENGTH
+                : undefined
+            }
             value={field.value}
             onChange={(e) => field.onChange(e.target.value)}
             placeholder={field.placeholder}

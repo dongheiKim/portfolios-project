@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import { signIn } from "../api/signIn";
 import { useSignInForm } from "../model/useSignInForm";
 import { useAuthStore } from "@/features/auth/model/authStore";
+import { MAX_PASSWORD_LENGTH } from "@/features/auth/model/passwordPolicy";
 import { Button } from "@/shared/ui/Button";
 
 export function SignInForm() {
@@ -90,6 +91,7 @@ export function SignInForm() {
           id="password"
           name="password"
           type="password"
+          maxLength={MAX_PASSWORD_LENGTH}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="비밀번호 입력"
